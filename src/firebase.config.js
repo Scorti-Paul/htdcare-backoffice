@@ -6,12 +6,12 @@ import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyC0gPh0RbO2uaiGFb2tlv9qo5d6nG1t9a0",
-  authDomain: "farmercom-vendor.firebaseapp.com",
-  projectId: "farmercom-vendor",
-  storageBucket: "farmercom-vendor.appspot.com",
-  messagingSenderId: "250247286832",
-  appId: "1:250247286832:web:accb48179ec5c218c3ddf5"
+  apiKey: "AIzaSyB3EF2au1anbF9fNbL1bbPCwaN1lpND5Os",
+  authDomain: "htdcare-backoffice.firebaseapp.com",
+  projectId: "htdcare-backoffice",
+  storageBucket: "htdcare-backoffice.appspot.com",
+  messagingSenderId: "753314009907",
+  appId: "1:753314009907:web:2f72e2226e5095c65e2446"
 };
 
 // Initialize Firebase
