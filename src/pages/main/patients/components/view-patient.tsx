@@ -7,7 +7,7 @@ import {
 import { UserIcon, CubeIcon } from "@heroicons/react/24/outline";
 import moment from "moment";
 
-export default function ViewProduct({ selected }: any) {
+export default function ViewPatient({ selected }: any) {
   return (
     <>
       <div className="flex h-full">

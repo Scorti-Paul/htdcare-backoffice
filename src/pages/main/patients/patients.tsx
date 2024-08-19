@@ -5,44 +5,39 @@ import Table from "components/Table";
 import { Column } from "components/Table/types";
 import Modal from "components/Modal";
 import Header from "components/Header";
-import ViewProduct from "./components/viewproduct";
 import usePagination from "components/hooks/usePagination";
 import { useQuery } from "react-query";
 import { get } from "api";
 import { MoonLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
+import ViewPatient from "./components/view-patient";
 
-const Products: FC<{}> = () => {
+const Patients: FC<{}> = () => {
   const [showView, setShowView] = useState(false);
   const [selected, setSelected] = useState<any>({});
   const navigate = useNavigate();
 
   const columns: Column[] = [
     {
-      headerText: "Product",
-      keys: { type: "text", value: ["name"] },
+      headerText: "Patient | Phone",
+      keys: { type: "text", value: ["fullName", "phone"] },
       type: "text",
     },
     {
-      headerText: "Quantity",
-      keys: { type: "text", value: ["stock"] },
+      headerText: "Email",
+      keys: { type: "text", value: ["email"] },
       type: "text",
     },
     {
-      headerText: "Categories",
-      keys: { type: "currency", value: ["sellersPrice", "costPrice"] },
+      headerText: "Address",
+      keys: { type: "currency", value: ["location.address", "location.digitalAddress"] },
       type: "text",
     },
-    {
-      headerText: "Vendor",
-      keys: { type: "text", value: ["vendor.name"] },
-      type: "text",
-    },
-    {
-      headerText: "Status",
-      keys: { type: "text", value: ["status"] },
-      type: "text",
-    },
+    // {
+    //   headerText: "Vendor",
+    //   keys: { type: "text", value: ["vendor.name"] },
+    //   type: "text",
+    // },
     {
       headerText: "Created On",
       type: "date",
@@ -83,9 +78,9 @@ const Products: FC<{}> = () => {
 
   const { Pagination, page, limit } = usePagination(1, 10);
 
-  const { data, isFetching } = useQuery(["productList", page], () =>
-    get("/products", {
-      params: { page, limit, populate: ["vendors", "categories"] },
+  const { data, isFetching } = useQuery(["patientsList", page], () =>
+    get("/patients", {
+      params: { page, limit },
     })
   );
 
@@ -94,14 +89,14 @@ const Products: FC<{}> = () => {
       <div className="md:mt-4 md:px-12">
         <div className="px-4 sm:px-6 lg:px-8">
           <Header
-            title="Products"
-            description="A list of all the products in your account including their name, title, email and role."
+            title="Patients"
+            description="A list of all the patients in your account including their name, title, email and role."
           >
             <Button
               Icon={<PlusCircleIcon className="w-4" />}
               text={"Add product"}
               type={"link"}
-              path={"/createproducts"}
+              path={"/create-patient"}
               onClick={() => null}
               hasIcon={true}
             />
@@ -134,11 +129,11 @@ const Products: FC<{}> = () => {
       {/* View single product */}
       <>
         <Modal show={showView} setShow={setShowView}>
-          <ViewProduct selected={selected} />
+          <ViewPatient selected={selected} />
         </Modal>
       </>
     </>
   );
 };
 
-export default Products;
+export default Patients;

@@ -13,7 +13,7 @@ import { get } from "api";
 import useUploadImage from "components/hooks/useUploadImage";
 import UploadImage from "components/uploadimage";
 
-const UpdateProduct: FC<{}> = () => {
+const UpdatePatient: FC<{}> = () => {
   const [productData, setProductData] = useState<any>("");
   const { state } = useLocation();
   const [image, setImage] = useState<any>(null);
@@ -338,4 +338,4 @@ const UpdateProduct: FC<{}> = () => {
   );
 };
 
-export default UpdateProduct;
+export default UpdatePatient;
