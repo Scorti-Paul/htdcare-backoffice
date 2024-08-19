@@ -6,12 +6,9 @@ import PageNotFound from "pages/pagenotfound";
 import { FC } from "react";
 import ResetPassword from "pages/auth/reset";
 import Dashboard from "pages/main/dashboard";
-import Products from "pages/main/products/products";
 import Branches from "pages/main/branches/branches";
 import CreateBranch from "pages/main/branches/components/createbranch";
 import UpdateBranch from "pages/main/branches/components/updatebranch";
-import CreateProducts from "pages/main/products/components/createproducts";
-import UpdateProduct from "pages/main/products/components/updateProduct";
 import Services from "pages/main/services";
 import CreateServices from "pages/main/services/components/createservices";
 import UpdateService from "pages/main/services/components/updateservice";
@@ -36,6 +33,9 @@ import CreateProduction from "pages/main/production/components/createproduction"
 import ServiceRequests from "pages/main/servicerequests/servicerequests";
 import CreateServiceRequests from "pages/main/servicerequests/components/createservicerequests";
 import UpdateServiceRequests from "pages/main/servicerequests/components/updateservicerequests";
+import Patients from "pages/main/patients";
+import CreatePatient from "pages/main/patients/components/create-patient";
+import UpdatePatient from "pages/main/patients/components/update-patient";
 
 const router = createBrowserRouter([
   {
@@ -51,10 +51,6 @@ const router = createBrowserRouter([
         element: <Dashboard />
       },
       {
-        path: "/products",
-        element: <Products />
-      },
-      {
         path: "branches",
         element: <Branches />,
       },
@@ -67,16 +63,16 @@ const router = createBrowserRouter([
         element: <UpdateBranch />,
       },
       {
-        path: "products",
-        element: <Products />,
+        path: "/patients",
+        element: <Patients />,
       },
       {
-        path: "createproducts",
-        element: <CreateProducts />,
+        path: "create-patient",
+        element: <CreatePatient />,
       },
       {
-        path: "/products/update-product",
-        element: <UpdateProduct />,
+        path: "/patients/update-patient",
+        element: <UpdatePatient />,
       },
       {
         path: "services",
