@@ -1,4 +1,4 @@
-import { Fragment, useState  } from "react";
+import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -13,10 +13,9 @@ import {
   ShoppingBagIcon,
   WrenchScrewdriverIcon,
   ChevronUpIcon,
-  PowerIcon,
   GiftIcon,
 } from "@heroicons/react/24/outline";
-import logo from "assets/images/logo.png";
+import logo from "assets/images/logo-white.png";
 import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import React from "react";
@@ -34,9 +33,9 @@ const navigation = [
     count: 3,
   },
   {
-    name: "Products",
+    name: "Patients",
     icon: FolderIcon,
-    href: "/products",
+    href: "/patients",
     count: 4,
   },
 
@@ -100,7 +99,7 @@ export default function Layout() {
   const [cookies, , removeCookie] = useCookies(["accessToken"]);
   const [{ user }] = useCookies(["user"]);
   const location = useLocation();
-  
+
   if (!cookies?.accessToken) {
     return <Navigate to="/login" replace />;
   }
@@ -123,7 +122,7 @@ export default function Layout() {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <div className="fixed inset-0 bg-green-600 bg-opacity-75" />
+                <div className="fixed inset-0 bg-primary-600 bg-opacity-75" />
               </Transition.Child>
 
               <div className="fixed inset-0 z-40 flex">
@@ -175,8 +174,8 @@ export default function Layout() {
                             to={item.href}
                             className={
                               location.pathname === item.href
-                                ? "bg-green-900 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-                                : "text-green-300 hover:bg-green-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                                ? "bg-primary-900 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                                : "text-primary-300 hover:bg-primary-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md"
                             }
                           >
                             <item.icon
@@ -200,7 +199,7 @@ export default function Layout() {
                         <div className="flex items-center">
                           <div>
                             <img
-                              className="inline-block h-10 w-10 rounded-full"
+                              className="inline-block h-12 w-12 rounded-full"
                               src={logo}
                               alt=""
                             />
@@ -234,27 +233,27 @@ export default function Layout() {
           {/* Static sidebar for desktop */}
           <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
             {/* Sidebar component, swap this element with another sidebar if you like */}
-            <div className="flex min-h-0 flex-1 flex-col bg-green-800">
+            <div className="flex min-h-0 flex-1 flex-col bg-primary-700">
               <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
                 <div className="flex flex-shrink-0 items-center px-4">
-                  <img className="h-9 w-auto" src={logo} alt="Farmercom LTD" />
+                  <img className="h-12 w-auto" src={logo} alt="Divine Smile Dental Care" />
                 </div>
-                <nav className="mt-5 flex-1 space-y-1 px-2">
+                <nav className="mt-5 flex-1 space-y-1 px-3 py-3">
                   {navigation.map((item) => (
                     <Link
                       key={item.name}
                       to={item.href}
                       className={
                         location.pathname === item.href
-                          ? "bg-green-900 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-                          : "text-green-300 hover:bg-green-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                          ? "bg-primary-800 text-white group flex items-center px-2 py-3 text-sm font-medium rounded-md"
+                          : "text-primary-300 hover:bg-primary-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md"
                       }
                     >
                       <item.icon
                         className={
                           location.pathname === item.href
-                            ? "text-green-200 mr-3 flex-shrink-0 h-6 w-6"
-                            : "text-green-400 group-hover:text-green-300 mr-3 flex-shrink-0 h-6 w-6"
+                            ? "text-primary-200 mr-3 flex-shrink-0 h-6 w-6"
+                            : "text-primary-400 group-hover:text-primary-300 mr-3 flex-shrink-0 h-6 w-6"
                         }
                         aria-hidden="true"
                       />
@@ -263,7 +262,7 @@ export default function Layout() {
                   ))}
                 </nav>
               </div>
-              <div className="flex justify-between items-center flex-shrink-0 bg-green-700 p-4">
+              {/* <div className="flex justify-between items-center flex-shrink-0 bg-green-700 p-4">
                 <Link to="users/user/profile" className="hover:cursor-pointer">
                   <div className="group block w-full flex-shrink-0">
                     <div className="flex items-center">
@@ -290,7 +289,7 @@ export default function Layout() {
                     className="w-4"
                   />{" "}
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="flex flex-1 flex-col md:pl-64">
