@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { get } from "api";
 import useUploadImage from "components/hooks/useUploadImage";
 import UploadImage from "components/uploadimage";
-import { IDynamicInput } from "pages/main/products/types";
+import { IDynamicInput } from "pages/main/patients/types";
 import Select from "react-select";
 import DynamicInputComponent from "components/Input/dynamicinputs";
 import { updateProduce } from "api/mutations/produce";

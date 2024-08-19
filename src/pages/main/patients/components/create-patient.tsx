@@ -7,124 +7,116 @@ import { useState } from "react";
 import DoubleButton from "components/buttons/doubleButton";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
+import { createProduct } from "api/mutations/products";
 import { toast } from "react-toastify";
 import { get } from "api";
 import useUploadImage from "components/hooks/useUploadImage";
 import UploadImage from "components/uploadimage";
+// import Select from "react-select";
+import ReactSelect from 'react-select';
 import DynamicInputComponent from "components/Input/dynamicinputs";
-import { IDynamicInput } from "pages/main/patients/types";
-import Select from "react-select";
-import { createProduce } from "api/mutations/produce";
+import { IDynamicInput } from "../types";
 
-const CreateProduce: FC<{}> = () => {
-  const [produceData, setProduceData] = useState<any>("");
+const CreatePatient: FC = () => {
+  const [productData, setProductData] = useState<any>("");
   const [image, setImage] = useState<any>(null);
   const [tempUrl, setTempUrl] = useState<string>("");
   const [searchString, setSearchString] = useState<string>("");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedVendor, setSelectedVendor] = useState<string[]>([]);
+  const navigate = useNavigate();
   const [inputs, setInputs] = useState<IDynamicInput[]>([
     { unit: "", price: "" },
   ]);
-  const [selectedFarmers, setSelectedFarmers] = useState<string[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-  const navigate = useNavigate();
   const { uploadImage, loading } = useUploadImage();
 
   const handleChange = useCallback(
     (e: any) => {
-      setProduceData({
-        ...produceData,
+      setProductData({
+        ...productData,
         [e.target.name]: e.target.value,
       });
     },
-    [produceData]
+    [productData]
   );
 
-  const { data: farmers, isFetching: loadingFamers } = useQuery(
-    ["farmersSearchByName", searchString],
+  const { data: categoryData, isFetching: isFetchingCategory } = useQuery(
+    ["allCategories"],
+    () => get("/categories")
+  );
+  const { data: vendors, isFetching: loadingVendors } = useQuery(
+    ["allvendors", searchString],
     () =>
-      get("/farmers", {
+      get("/vendors", {
         params: {
-          search: { key: "firstName", value: searchString },
+          search: { key: "name", value: searchString },
         },
       })
   );
 
-  const typeOption = [
-    { value: "", label: "Select type" },
-    { value: "crop", label: "Crop" },
-    { value: "livestock", label: "Livestock" },
-  ];
-
   const { mutateAsync, isLoading } = useMutation({
     mutationFn: (body: any) => {
-      return createProduce(body);
+      return createProduct(body);
     },
     onError: (e) => {
       toast?.error("There was an error");
     },
     onSuccess: () => {
-      toast?.success("Produce created successfully");
-      navigate("/produce");
+      toast?.success("Product created successfully");
+      navigate("/products");
     },
   });
 
-  const handleSubmission = (e: any) => {
-    //
-    e?.preventDefault();
+  const handleSubmission = useCallback(
+    async (e: any) => {
+      //
+      e?.preventDefault();
 
-    if (produceData.name === undefined) {
-      return toast?.error("Name can't be empty");
-    }
+      if (productData.name === undefined) {
+        return toast?.error("Name can't be empty");
+      }
 
-    if (produceData.type === undefined) {
-      return toast?.error("Select produce type");
-    }
+      if (productData.stock === undefined) {
+        return toast?.error("Enter current stock of product");
+      }
 
-    if (selectedFarmers?.length < 1) {
-      return toast?.error("Select at least 1 farmer");
-    }
+      if (selectedCategories.length === 0) {
+        return toast?.error("Select a category");
+      }
 
-    if (produceData.stock === undefined) {
-      return toast?.error("Quantity can't be empty");
-    }
+      if (selectedVendor.length === 0) {
+        return toast?.error("Select at least 1 vendor");
+      }
 
-    if (inputs.length < 1) {
-      return toast?.error("Add at least one selling variants");
-    }
-
-    // add status
-    uploadImage(image)
-      ?.then((link: string) => {
-        mutateAsync({
-          ...produceData,
-          image: link,
-          categories: selectedCategories,
-          farmers: selectedFarmers,
-          produceType: produceData.type,
-          statuss: produceData.status,
-          variants: inputs?.map((item) => {
-            return {
-              unit: item.unit,
-              price: parseInt(item.price),
-            };
-          }),
+      uploadImage(image)
+        ?.then((link: string) => {
+          mutateAsync({
+            ...productData,
+            image: link,
+            vendors: selectedVendor,
+            categories: selectedCategories,
+            variants: inputs?.map((item) => {
+              return {
+                unit: item.unit,
+                price: parseInt(item.price),
+              };
+            }),
+          });
+        })
+        ?.catch((e) => {
+          toast?.warning(e?.message);
         });
-        // navigate("/produce");
-      })
-      ?.then(() => {
-        setProduceData("");
-        setImage(null);
-        setTempUrl("");
-      })
-      ?.catch((e) => {
-        toast?.warning(e?.message);
-      });
-  };
-
-  const { data: categoryData, isFetching: isFetchingCategory } = useQuery(
-    ["categoriesSearch"],
-    () => get("/categories")
+    },
+    [
+      productData,
+      mutateAsync,
+      image,
+      uploadImage,
+      selectedCategories,
+      inputs,
+      selectedVendor,
+    ]
   );
 
   const createTemp = useCallback(() => {
@@ -138,25 +130,19 @@ const CreateProduce: FC<{}> = () => {
     createTemp();
   }, [createTemp]);
 
-  const activeStateOption = [
-    { value: "", label: "Select State" },
-    { value: "Active", label: "Active" },
-    { value: "Inactive", label: "Inactive" },
-  ];
-
   return (
     <>
       <div className="md:mt-4 md:px-12">
         <div className="px-4 sm:px-6 lg:px-8">
           <Header
-            title="Create Produce"
-            description="Fill out the details to sign up a new produce."
+            title="Create Product"
+            description="Fill out the details to create new product."
           >
             <Button
               Icon={<EyeIcon className="w-4" />}
-              text={"Produce"}
+              text={"Products"}
               type={"link"}
-              path={"/produce"}
+              path={"/products"}
               onClick={() => null}
               hasIcon={true}
             />
@@ -182,42 +168,28 @@ const CreateProduce: FC<{}> = () => {
                       />
                     </div>
                     <div className="w-full grid grid-cols-6 gap-6">
-                      <Input
-                        label="Produce name"
-                        name="name"
-                        inputLength="medium"
-                        placeholder="eg. Orange"
-                        value={produceData["name"] || ""}
-                        onChange={handleChange}
-                        optionalLabel={true}
-                        hasShowPassword="disable"
-                        type="text"
-                        field="input"
-                        autoComplete="true"
-                      />
-
-                      <div className="col-span-3">
+                      <div className="col-span-5">
                         <Input
-                          label="Propduce Type"
-                          name="type"
+                          label="Product name"
+                          name="name"
+                          inputLength="large"
+                          placeholder="eg. Spraying machine"
+                          value={productData["name"] || ""}
                           onChange={handleChange}
-                          value={produceData["type"] || ""}
-                          inputLength="medium"
-                          placeholder="Eg. 20"
-                          hasShowPassword="disable"
-                          type="number"
-                          field="select"
-                          selectOptions={typeOption}
-                          autoComplete="true"
                           optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="text"
+                          field="input"
+                          autoComplete="true"
                         />
                       </div>
-                      <div className="col-span-3">
+
+                      <div className="col-span-1">
                         <Input
                           label="Stock"
                           name="stock"
                           onChange={handleChange}
-                          value={produceData["stock"] || ""}
+                          value={productData["stock"] || ""}
                           inputLength="medium"
                           placeholder="Eg. 20"
                           hasShowPassword="disable"
@@ -236,14 +208,14 @@ const CreateProduce: FC<{}> = () => {
                           Category
                         </label>
                         <div className="mt-1">
-                          <Select
-                            onInputChange={(e) => setSearchString(e)}
+                          <ReactSelect
+                            onInputChange={(e: any) => setSearchString(e)}
                             className="basic-single"
                             classNamePrefix="select"
                             isLoading={isFetchingCategory}
                             isClearable={true}
                             isSearchable={true}
-                            onChange={(e) =>
+                            onChange={(e: any) =>
                               setSelectedCategories(
                                 e?.map((item: any) => item.value)
                               )
@@ -265,48 +237,31 @@ const CreateProduce: FC<{}> = () => {
                           htmlFor="category"
                           className="block text-sm font-medium text-gray-700"
                         >
-                          Select Farmers
+                          Select vendor
                         </label>
                         <div className="mt-1">
-                          <Select
-                            onInputChange={(e) => setSearchString(e)}
+                          <ReactSelect
+                            onInputChange={(e: any) => setSearchString(e)}
                             className="select"
                             isMulti={true}
                             classNamePrefix="select"
-                            isLoading={loadingFamers}
+                            isLoading={loadingVendors}
                             isClearable={true}
-                            onChange={(e) =>
-                              setSelectedFarmers(
+                            onChange={(e: any) =>
+                              setSelectedVendor(
                                 e?.map((item: any) => item.value)
                               )
                             }
                             isSearchable={true}
                             name="name"
-                            options={farmers?.data?.map((item: any) => {
+                            options={vendors?.data?.map((item: any) => {
                               return {
                                 value: item._id,
-                                label: item.firstName + " " + item?.surname,
+                                label: item.name,
                               };
                             })}
                           />
                         </div>
-                      </div>
-
-                      <div className="col-span-3">
-                        <Input
-                          label="Active State"
-                          name="status"
-                          onChange={handleChange}
-                          value={produceData["status"] || ""}
-                          inputLength="medium"
-                          placeholder=""
-                          hasShowPassword="disable"
-                          type="text"
-                          field="select"
-                          selectOptions={activeStateOption}
-                          autoComplete="true"
-                          optionalLabel={true}
-                        />
                       </div>
 
                       <Input
@@ -314,7 +269,7 @@ const CreateProduce: FC<{}> = () => {
                         name="description"
                         inputLength="large"
                         placeholder="Extra information about product goes here"
-                        value={produceData["description"] || ""}
+                        value={productData["description"] || ""}
                         onChange={handleChange}
                         type=""
                         field="textarea"
@@ -341,7 +296,7 @@ const CreateProduce: FC<{}> = () => {
                   </div>
                   <DoubleButton
                     loading={isLoading || loading}
-                    buttonText="Save produce"
+                    buttonText="Save product"
                     onClick={handleSubmission}
                   />
                 </div>
@@ -353,4 +308,5 @@ const CreateProduce: FC<{}> = () => {
     </>
   );
 };
-export default CreateProduce;
+
+export default CreatePatient;

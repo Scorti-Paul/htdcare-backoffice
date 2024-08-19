@@ -1,5 +1,5 @@
 import { PlusCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
-import { IDynamicInput, IDynamicProps } from "pages/main/products/types";
+import { IDynamicInput, IDynamicProps } from "pages/main/patients/types";
 import React, { ChangeEvent } from "react";
 
 const DynamicInputComponent: React.FC<IDynamicProps> = ({
