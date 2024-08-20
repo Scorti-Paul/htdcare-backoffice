@@ -11,7 +11,8 @@ import { useQuery } from "react-query";
 import { get } from "api";
 import FarmerCard from "components/card/farmercard";
 import TopBarProgress from "react-topbar-progress-indicator";
-export default function ViewProduce({ selected }: any) {
+
+export default function ViewDentist({ selected }: any) {
   const { data, isLoading } = useQuery(["view-produce", selected?.id], () =>
     get(`/produce`, {
       params: {

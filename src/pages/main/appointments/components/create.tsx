@@ -1,25 +1,25 @@
-import { FC, useCallback, useEffect } from 'react'
+import { FC, useCallback } from 'react'
 import { EyeIcon } from '@heroicons/react/24/solid'
 import Button from '../../../../components/buttons/Button'
 import Input from '../../../../components/Input'
 import Header from '../../../../components/Header'
 import DoubleButton from '../../../../components/buttons/doubleButton'
 import { useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+
 import { useMutation } from 'react-query'
-import { updateVendor } from '../../../../api/mutations/vendors'
+import { createVendor } from '../../../../api/mutations/vendors'
 import { toast } from 'react-toastify'
 
-const UpdateBranch: FC<{}> = () => {
+const CreateAppointment: FC<{}> = () => {
   const [vendorData, setVendorData] = useState<any>('')
   const [showPassword, setShowPassword] = useState(true)
-
-  const { state } = useLocation()
-  const navigate = useNavigate()
 
   const handleShowHidePassword = () => {
     setShowPassword(!showPassword)
   }
+
+  const navigate = useNavigate()
 
   const handleChange = (e: any) => {
     setVendorData({
@@ -30,14 +30,13 @@ const UpdateBranch: FC<{}> = () => {
 
   const { mutateAsync, isLoading } = useMutation({
     mutationFn: (body: any) => {
-      return updateVendor({ ...body, id: state?._id })
+      return createVendor(body)
     },
     onError: (e) => {
-      toast?.error('There was an error updating')
+      toast?.error('There was an error registering')
     },
     onSuccess: () => {
-      toast?.success('Vendor updated successfully')
-      navigate('/vendors')
+      toast?.success('Vendor created successfully')
     },
   })
 
@@ -97,42 +96,23 @@ const UpdateBranch: FC<{}> = () => {
       mutateAsync({
         ...vendorData,
       })
+
+      navigate('/vendors')
     },
-    [vendorData, mutateAsync],
+    [vendorData, mutateAsync, navigate],
   )
 
   const venderTypeOptions = [
-    { value: 'Service', text: 'Service' },
-    { value: 'Product', text: 'Product' },
+    { value: 'Service', label: 'Service' },
+    { value: 'Product', label: 'Product' },
   ]
-
-  const initialCheck = useCallback(() => {
-    if (state) {
-      setVendorData({
-        name: state?.name,
-        type: state?.type,
-        email: state?.email,
-        phone: state?.phone,
-        alternativePhoneNumber: state?.alternativePhoneNumber,
-        address: state?.address,
-        location: state?.location,
-        dateOfReg: state?.dateOfReg,
-        digitalAddress: state?.digitalAddress,
-        password: state?.password,
-      })
-    }
-  }, [state])
-
-  useEffect(() => {
-    initialCheck()
-  }, [initialCheck])
 
   return (
     <>
       <div className="md:mt-4 md:px-12">
         <div className="px-4 sm:px-6 lg:px-8">
           <Header
-            title="Update Vendors"
+            title="Create Vendors"
             description="Fill out the details to sign up a new vendor."
           >
             <Button
@@ -333,7 +313,7 @@ const UpdateBranch: FC<{}> = () => {
 
                   <DoubleButton
                     loading={isLoading}
-                    buttonText="Update vendor"
+                    buttonText="Save vendor"
                     onClick={handleSubmission}
                   />
                 </div>
@@ -346,4 +326,4 @@ const UpdateBranch: FC<{}> = () => {
   )
 }
 
-export default UpdateBranch
+export default CreateAppointment

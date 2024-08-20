@@ -10,7 +10,7 @@ import {
 } from "@heroicons/react/24/outline";
 import moment from "moment";
 
-export default function ViewBranch({ selected }: any) {
+export default function ViewPayments({ selected }: any) {
   return (
     <>
       <div className="flex h-full">

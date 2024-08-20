@@ -10,9 +10,9 @@ import { MoonLoader } from "react-spinners";
 import { get } from "../../../api";
 import usePagination from "../../../components/hooks/usePagination";
 import { useNavigate } from "react-router-dom";
-import ViewBranch from "./components/viewbranch";
+import ViewAppointment from "./components/view";
 
-const Branches: FC<{}> = () => {
+const Appointments: FC<{}> = () => {
   const [showView, setShowView] = useState(false);
   const [selected, setSelected] = useState<any>({});
 
@@ -132,11 +132,11 @@ const Branches: FC<{}> = () => {
       {/* View single vendor */}
       <>
         <Modal show={showView} setShow={setShowView}>
-          <ViewBranch selected={selected} />
+          <ViewAppointment selected={selected} />
         </Modal>
       </>
     </>
   );
 };
 
-export default Branches;
+export default Appointments;

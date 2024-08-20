@@ -5,14 +5,14 @@ import Table from "../../../components/Table";
 import { Column } from "../../../components/Table/types";
 import Modal from "../../../components/Modal";
 import Header from "../../../components/Header";
-import ViewProduce from "./components/viewproduce";
+import ViewProduce from "./components/view";
 import usePagination from "../../../components/hooks/usePagination";
 import { useQuery } from "react-query";
 import { get } from "../../../api";
 import { MoonLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 
-const Produce: FC<{}> = () => {
+const Dentists: FC<{}> = () => {
   const [showView, setShowView] = useState(false);
   const [selected, setSelected] = useState<any>({});
   const navigate = useNavigate();
@@ -23,11 +23,6 @@ const Produce: FC<{}> = () => {
       keys: { type: "text", value: ["name", "produceType"] },
       type: "text",
     },
-    // {
-    //   headerText: "Farmers",
-    //   keys: { type: "text", value: ["farmers.[0].name"] },
-    //   type: "text",
-    // },
     {
       headerText: "Stock | Unit",
       keys: { type: "text", value: ["stock"] },
@@ -137,4 +132,4 @@ const Produce: FC<{}> = () => {
   );
 };
 
-export default Produce;
+export default Dentists;

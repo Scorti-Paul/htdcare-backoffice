@@ -5,18 +5,18 @@ import Input from "components/Input";
 import Header from "components/Header";
 import { useState } from "react";
 import DoubleButton from "components/buttons/doubleButton";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import { toast } from "react-toastify";
 import { get } from "api";
 import useUploadImage from "components/hooks/useUploadImage";
 import UploadImage from "components/uploadimage";
+import DynamicInputComponent from "components/Input/dynamicinputs";
 import { IDynamicInput } from "pages/main/patients/types";
 import Select from "react-select";
-import DynamicInputComponent from "components/Input/dynamicinputs";
-import { updateProduce } from "api/mutations/produce";
+import { createProduce } from "api/mutations/produce";
 
-const UpdateProduce: FC<{}> = () => {
+const CreateDentist: FC<{}> = () => {
   const [produceData, setProduceData] = useState<any>("");
   const [image, setImage] = useState<any>(null);
   const [tempUrl, setTempUrl] = useState<string>("");
@@ -24,46 +24,21 @@ const UpdateProduce: FC<{}> = () => {
   const [inputs, setInputs] = useState<IDynamicInput[]>([
     { unit: "", price: "" },
   ]);
-
-  const [selectedFarmers, setSelectedFarmers] = useState<any[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
-
-  const { uploadImage, loading } = useUploadImage();
+  const [selectedFarmers, setSelectedFarmers] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   const navigate = useNavigate();
+  const { uploadImage, loading } = useUploadImage();
 
-  const { state } = useLocation();
-
-  const handleChange = (e: any) => {
-    setProduceData({
-      ...produceData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const typeOption = [
-    { value: "", label: "Select type" },
-    { value: "crop", label: "Crop" },
-    { value: "livestock", label: "Livestock" },
-  ];
-  const activeStateOption = [
-    { value: "", label: "Select State" },
-    { value: "Active", label: "Active" },
-    { value: "Inactive", label: "Inactive" },
-  ];
-
-  const { mutateAsync, isLoading } = useMutation({
-    mutationFn: (body: any) => {
-      return updateProduce({ ...body, id: state?._id });
+  const handleChange = useCallback(
+    (e: any) => {
+      setProduceData({
+        ...produceData,
+        [e.target.name]: e.target.value,
+      });
     },
-    onError: (e) => {
-      toast?.error("There was an error");
-    },
-    onSuccess: () => {
-      toast?.success("Produce updated successfully");
-      navigate("/produce");
-    },
-  });
+    [produceData]
+  );
 
   const { data: farmers, isFetching: loadingFamers } = useQuery(
     ["farmersSearchByName", searchString],
@@ -72,127 +47,84 @@ const UpdateProduce: FC<{}> = () => {
         params: {
           search: { key: "firstName", value: searchString },
         },
-      }),
-    {
-      onSuccess: ({ data }) => {
-        const newSelectedFarmers: any = [];
-
-        state?.farmers?.forEach((item: string) => {
-          const selected = data.find((farmer: any) => farmer._id === item);
-
-          newSelectedFarmers.push({
-            value: selected._id,
-            label: selected.firstName + " " + selected.surname,
-          });
-        });
-
-        setSelectedFarmers(newSelectedFarmers);
-      },
-    }
-  );
-  const { data: categoryData, isFetching: isFetchingCategory } = useQuery(
-    ["categoriesSearch"],
-    () => get("/categories"),
-    {
-      onSuccess: ({ data }) => {
-        const newSelectedCat: any = [];
-
-        state?.categories?.forEach((item: string) => {
-          const selected = data.find((cat: any) => cat._id === item);
-          newSelectedCat.push({
-            value: selected._id,
-            label: selected.name,
-          });
-        });
-
-        setSelectedCategories(newSelectedCat);
-      },
-    }
+      })
   );
 
-  const handleSubmission = useCallback(
-    (e: any) => {
-      //
-      e?.preventDefault();
+  const typeOption = [
+    { value: "", label: "Select type" },
+    { value: "crop", label: "Crop" },
+    { value: "livestock", label: "Livestock" },
+  ];
 
-      if (produceData.name === undefined) {
-        return toast?.error("Name can't be empty");
-      }
+  const { mutateAsync, isLoading } = useMutation({
+    mutationFn: (body: any) => {
+      return createProduce(body);
+    },
+    onError: (e) => {
+      toast?.error("There was an error");
+    },
+    onSuccess: () => {
+      toast?.success("Produce created successfully");
+      navigate("/produce");
+    },
+  });
 
-      if (selectedFarmers?.length < 1) {
-        return toast?.error("Select at least 1 farmer");
-      }
+  const handleSubmission = (e: any) => {
+    //
+    e?.preventDefault();
 
-      if (produceData.stock === undefined) {
-        return toast?.error("Quantity can't be empty");
-      }
+    if (produceData.name === undefined) {
+      return toast?.error("Name can't be empty");
+    }
 
-      if (inputs.length < 1) {
-        return toast?.error("Add at least one selling variants");
-      }
+    if (produceData.type === undefined) {
+      return toast?.error("Select produce type");
+    }
 
-      if (!image) {
+    if (selectedFarmers?.length < 1) {
+      return toast?.error("Select at least 1 farmer");
+    }
+
+    if (produceData.stock === undefined) {
+      return toast?.error("Quantity can't be empty");
+    }
+
+    if (inputs.length < 1) {
+      return toast?.error("Add at least one selling variants");
+    }
+
+    // add status
+    uploadImage(image)
+      ?.then((link: string) => {
         mutateAsync({
-          image: produceData?.image,
           ...produceData,
-          categories: selectedCategories?.map((item) => item.value),
-          farmers: selectedFarmers?.map((item) => item.value),
+          image: link,
+          categories: selectedCategories,
+          farmers: selectedFarmers,
           produceType: produceData.type,
-          status: produceData.status,
+          statuss: produceData.status,
           variants: inputs?.map((item) => {
             return {
               unit: item.unit,
               price: parseInt(item.price),
             };
           }),
-        })
-          ?.then(() => {
-            toast?.success("Produce updated successfully");
-            setProduceData("");
-            setSelectedFarmers([]);
-            setSelectedCategories([]);
-            setInputs([{ unit: "", price: "" }]);
-            setTempUrl("");
-            setImage(null);
-            return navigate("/produce");
-          })
-          ?.catch((e) => {
-            return toast?.warning(e?.message);
-          });
-      } else {
-        uploadImage(image)
-          ?.then((link: string) => {
-            mutateAsync({
-              ...produceData,
-              image: link,
-              categories: selectedCategories?.map((item) => item.value),
-              farmers: selectedFarmers?.map((item) => item.value),
-              status: produceData.status,
-              produceType: produceData.type,
-              variants: inputs?.map((item) => {
-                return {
-                  unit: item.unit,
-                  price: parseInt(item.price),
-                };
-              }),
-            });
-            navigate("/produce");
-          })
-          ?.catch((e) => {
-            toast?.warning(e?.message);
-          });
-      }
-    },
-    [
-      produceData,
-      mutateAsync,
-      image,
-      uploadImage,
-      navigate,
-      inputs,
-      selectedFarmers,
-      selectedCategories,
-    ]
+        });
+        // navigate("/produce");
+      })
+      ?.then(() => {
+        setProduceData("");
+        setImage(null);
+        setTempUrl("");
+      })
+      ?.catch((e) => {
+        toast?.warning(e?.message);
+      });
+  };
+
+  const { data: categoryData, isFetching: isFetchingCategory } = useQuery(
+    ["categoriesSearch"],
+    () => get("/categories")
   );
 
   const createTemp = useCallback(() => {
@@ -206,46 +138,11 @@ const UpdateProduce: FC<{}> = () => {
     createTemp();
   }, [createTemp]);
 
-  const initialCheck = useCallback(() => {
-    if (state) {
-      setTempUrl(state?.image);
-      setProduceData({
-        image: state?.image,
-        name: state?.name,
-        category: state?.category,
-        type: state?.type,
-        produceType: state?.produceType,
-        stock: state?.stock,
-        measuringUnit: state?.measuringUnit,
-        costPrice: state?.costPrice,
-        sellersPrice: state?.sellersPrice,
-        farmer: state?.farmer,
-        status: state?.status,
-        description: state?.description,
-      });
-    }
-  }, [state]);
-
-  useEffect(() => {
-    initialCheck();
-  }, [initialCheck]);
-
-  const handleFarmers = useCallback(() => {
-    if (state) {
-      setInputs(
-        state?.variants?.map((item: any) => {
-          return {
-            unit: item.unit,
-            price: item.price,
-          };
-        })
-      );
-    }
-  }, [state, setInputs]);
-
-  useEffect(() => {
-    handleFarmers();
-  }, [handleFarmers]);
+  const activeStateOption = [
+    { value: "", label: "Select State" },
+    { value: "Active", label: "Active" },
+    { value: "Inactive", label: "Inactive" },
+  ];
 
   return (
     <>
@@ -301,10 +198,10 @@ const UpdateProduce: FC<{}> = () => {
 
                       <div className="col-span-3">
                         <Input
-                          label="Produce Type"
-                          name="produceType"
+                          label="Propduce Type"
+                          name="type"
                           onChange={handleChange}
-                          value={produceData["produceType"] || ""}
+                          value={produceData["type"] || ""}
                           inputLength="medium"
                           placeholder="Eg. 20"
                           hasShowPassword="disable"
@@ -315,7 +212,6 @@ const UpdateProduce: FC<{}> = () => {
                           optionalLabel={true}
                         />
                       </div>
-
                       <div className="col-span-3">
                         <Input
                           label="Stock"
@@ -346,18 +242,12 @@ const UpdateProduce: FC<{}> = () => {
                             classNamePrefix="select"
                             isLoading={isFetchingCategory}
                             isClearable={true}
-                            value={selectedCategories}
                             isSearchable={true}
-                            onChange={(e) => {
+                            onChange={(e) =>
                               setSelectedCategories(
-                                e?.map((item: any) => {
-                                  return {
-                                    label: item.label,
-                                    value: item.value,
-                                  };
-                                })
-                              );
-                            }}
+                                e?.map((item: any) => item.value)
+                              )
+                            }
                             isMulti={true}
                             name="category"
                             options={categoryData?.data?.map((item: any) => {
@@ -385,15 +275,9 @@ const UpdateProduce: FC<{}> = () => {
                             classNamePrefix="select"
                             isLoading={loadingFamers}
                             isClearable={true}
-                            value={selectedFarmers}
                             onChange={(e) =>
                               setSelectedFarmers(
-                                e?.map((item: any) => {
-                                  return {
-                                    label: item.label,
-                                    value: item.value,
-                                  };
-                                })
+                                e?.map((item: any) => item.value)
                               )
                             }
                             isSearchable={true}
@@ -457,7 +341,7 @@ const UpdateProduce: FC<{}> = () => {
                   </div>
                   <DoubleButton
                     loading={isLoading || loading}
-                    buttonText="Update produce"
+                    buttonText="Save produce"
                     onClick={handleSubmission}
                   />
                 </div>
@@ -469,5 +353,4 @@ const UpdateProduce: FC<{}> = () => {
     </>
   );
 };
-
-export default UpdateProduce;
+export default CreateDentist;

@@ -6,19 +6,13 @@ import PageNotFound from "pages/pagenotfound";
 import { FC } from "react";
 import ResetPassword from "pages/auth/reset";
 import Dashboard from "pages/main/dashboard";
-import Branches from "pages/main/branches/branches";
-import CreateBranch from "pages/main/branches/components/createbranch";
-import UpdateBranch from "pages/main/branches/components/updatebranch";
 import Services from "pages/main/services";
-import CreateServices from "pages/main/services/components/createservices";
-import UpdateService from "pages/main/services/components/updateservice";
+import CreateServices from "pages/main/services/components/create";
+import UpdateService from "pages/main/services/components/update";
 import Farmers from "pages/main/farmers";
 import CreateFarmers from "pages/main/farmers/components/createfarmer";
 import UpdateFarmer from "pages/main/farmers/components/updatefarmer";
 import ViewSingleFarmer from "pages/main/farmers/components/viewfarmer";
-import Produce from "pages/main/produce";
-import CreateProduce from "pages/main/produce/components/createproduce";
-import UpdateProduce from "pages/main/produce/components/updateproduce";
 import Orders from "pages/main/orders";
 import UpdateOrder from "pages/main/orders/components/updateorder";
 import UserProfile from "pages/main/users/components/userprofile";
@@ -34,8 +28,14 @@ import ServiceRequests from "pages/main/servicerequests/servicerequests";
 import CreateServiceRequests from "pages/main/servicerequests/components/createservicerequests";
 import UpdateServiceRequests from "pages/main/servicerequests/components/updateservicerequests";
 import Patients from "pages/main/patients";
-import CreatePatient from "pages/main/patients/components/create-patient";
-import UpdatePatient from "pages/main/patients/components/update-patient";
+import CreatePatient from "pages/main/patients/components/create";
+import UpdatePatient from "pages/main/patients/components/update";
+import Dentists from "pages/main/dentists";
+import CreateDentist from "pages/main/dentists/components/create";
+import UpdateDentist from "pages/main/dentists/components/update";
+import Appointments from "pages/main/appointments";
+import UpdateAppointment from "pages/main/appointments/components/update";
+import CreateAppointment from "pages/main/appointments/components/create";
 
 const router = createBrowserRouter([
   {
@@ -51,23 +51,23 @@ const router = createBrowserRouter([
         element: <Dashboard />
       },
       {
-        path: "branches",
-        element: <Branches />,
+        path: "/appointments",
+        element: <Appointments />
       },
       {
-        path: "create-branch",
-        element: <CreateBranch />,
+        path: "/appointments/create-appointment",
+        element: <CreateAppointment />
       },
       {
-        path: "/branches/update-branch",
-        element: <UpdateBranch />,
+        path: "/appointments/update-appointment",
+        element: <UpdateAppointment />
       },
       {
         path: "/patients",
         element: <Patients />,
       },
       {
-        path: "create-patient",
+        path: "/patients/create-patient",
         element: <CreatePatient />,
       },
       {
@@ -103,16 +103,16 @@ const router = createBrowserRouter([
         element: <ViewSingleFarmer />,
       },
       {
-        path: "produce",
-        element: <Produce />,
+        path: "dentists",
+        element: <Dentists />,
       },
       {
-        path: "createproduce",
-        element: <CreateProduce />,
+        path: "create-dentist",
+        element: <CreateDentist />,
       },
       {
-        path: "/produce/update-produce",
-        element: <UpdateProduce />,
+        path: "/dentists/update-dentist",
+        element: <UpdateDentist />,
       },
       {
         path: "orders",

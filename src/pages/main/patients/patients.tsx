@@ -10,7 +10,7 @@ import { useQuery } from "react-query";
 import { get } from "api";
 import { MoonLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
-import ViewPatient from "./components/view-patient";
+import ViewPatient from "./components/view";
 
 const Patients: FC<{}> = () => {
   const [showView, setShowView] = useState(false);

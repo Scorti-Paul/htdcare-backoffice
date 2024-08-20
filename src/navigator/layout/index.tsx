@@ -7,18 +7,17 @@ import {
   InboxIcon,
   UserGroupIcon,
   XMarkIcon,
-  Cog6ToothIcon,
+  // Cog6ToothIcon,
   UsersIcon,
   ShoppingCartIcon,
   ShoppingBagIcon,
   WrenchScrewdriverIcon,
   ChevronUpIcon,
-  GiftIcon,
+  // GiftIcon,
 } from "@heroicons/react/24/outline";
 import logo from "assets/images/logo-white.png";
 import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import React from "react";
 
 const navigation = [
   {
@@ -27,9 +26,9 @@ const navigation = [
     href: "/dashboard",
   },
   {
-    name: "Branches",
+    name: "Appointments",
     icon: UserGroupIcon,
-    href: "/branches",
+    href: "/appointments",
     count: 3,
   },
   {
@@ -38,28 +37,27 @@ const navigation = [
     href: "/patients",
     count: 4,
   },
-
   {
     name: "Services",
     icon: WrenchScrewdriverIcon,
     href: "/services",
   },
   {
-    name: "Service Requests",
+    name: "Payments",
     icon: ShoppingCartIcon,
     href: "/service-requests",
     count: 12,
   },
+  // {
+  //   name: "Farmers",
+  //   icon: InboxIcon,
+  //   href: "/farmers",
+  //   count: 12,
+  // },
   {
-    name: "Farmers",
+    name: "Dentists",
     icon: InboxIcon,
-    href: "/farmers",
-    count: 12,
-  },
-  {
-    name: "Produce",
-    icon: InboxIcon,
-    href: "/produce",
+    href: "/dentists",
     count: 12,
   },
   {
@@ -68,30 +66,30 @@ const navigation = [
     href: "/orders",
     count: 12,
   },
-  {
-    name: "Productions",
-    icon: ShoppingCartIcon,
-    href: "/production",
-    count: 12,
-  },
+  // {
+  //   name: "Productions",
+  //   icon: ShoppingCartIcon,
+  //   href: "/production",
+  //   count: 12,
+  // },
   {
     name: "Users",
     icon: UsersIcon,
     href: "/users",
     count: 12,
   },
-  {
-    name: "Settings",
-    icon: Cog6ToothIcon,
-    href: "/settings",
-    count: 12,
-  },
-  {
-    name: "Category",
-    icon: GiftIcon,
-    href: "/categories",
-    count: 16,
-  },
+  // {
+  //   name: "Settings",
+  //   icon: Cog6ToothIcon,
+  //   href: "/settings",
+  //   count: 12,
+  // },
+  // {
+  //   name: "Category",
+  //   icon: GiftIcon,
+  //   href: "/categories",
+  //   count: 16,
+  // },
 ];
 
 export default function Layout() {
