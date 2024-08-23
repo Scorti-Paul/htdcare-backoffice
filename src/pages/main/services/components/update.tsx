@@ -7,7 +7,7 @@ import DoubleButton from "components/buttons/doubleButton";
 import { useMutation, useQuery } from "react-query";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
-import { updateProduct } from "api/mutations/products";
+import { updatePatient } from "api/mutations/patients";
 import { get } from "api";
 import UploadImage from "components/uploadimage";
 import useUploadImage from "components/hooks/useUploadImage";
@@ -53,7 +53,7 @@ const UpdateService: FC<{}> = ({ onclick }: any) => {
 
   const { mutateAsync, isLoading } = useMutation({
     mutationFn: (body: any) => {
-      return updateProduct({ ...body, id: state?._id });
+      return updatePatient({ ...body, id: state?._id });
     },
     onError: () => {
       toast?.error("There was an error");
