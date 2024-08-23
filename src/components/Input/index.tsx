@@ -61,7 +61,7 @@ export default function Input({
               <DatePicker
                 className={
                   !inputBlur
-                    ? `mt-1 block w-full rounded-md border-gray-300 shadow-sm placeholder:text-gray-400 focus:border-green-500 focus:ring-green-500 sm:text-sm  form-control form-input py-3.5`
+                    ? `mt-1 block w-full rounded-md border-gray-300 shadow-sm placeholder:text-gray-400 focus:border-green-500 focus:ring-green-500 sm:text-sm  form-control form-input py-3.5 text-darkBlue`
                     : `mt-1 block w-full rounded-md  border-red-400 shadow-sm placeholder:text-red-200 bg-red-50/40 focus:border-red-500 focus:ring-red-500 sm:text-sm form-control form-input py-3.5`
                 }
                 selected={moment(value || new Date()).toDate()}
@@ -146,7 +146,7 @@ export default function Input({
               placeholder={placeholder}
               className={
                 !inputBlur
-                  ? `mt-1 block w-full rounded-md border-gray-300 shadow-sm placeholder:text-gray-400 focus:border-green-500 focus:ring-green-500 sm:text-md transition-all duration-200 py-3`
+                  ? `mt-1 block w-full rounded-md border-gray-300 shadow-sm placeholder:text-darkBlue/40 focus:border-green-500 focus:ring-green-500 sm:text-md transition-all duration-200 py-3 text-darkBlue`
                   : `mt-1 block w-full rounded-md border-red-400 shadow-sm placeholder:text-red-200 bg-red-50/40 focus:border-red-500 focus:ring-red-500 sm:text-md transition-all duration-200 py-3`
               }
             />
