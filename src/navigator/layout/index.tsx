@@ -2,18 +2,19 @@ import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
-  FolderIcon,
   HomeIcon,
-  InboxIcon,
   UserGroupIcon,
   XMarkIcon,
-  // Cog6ToothIcon,
+  Cog6ToothIcon,
   UsersIcon,
-  ShoppingCartIcon,
   ShoppingBagIcon,
   WrenchScrewdriverIcon,
   ChevronUpIcon,
-  // GiftIcon,
+  GiftIcon,
+  AcademicCapIcon,
+  BanknotesIcon,
+  CalendarDaysIcon,
+  UserCircleIcon
 } from "@heroicons/react/24/outline";
 import logo from "assets/images/logo-white.png";
 import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
@@ -27,15 +28,21 @@ const navigation = [
   },
   {
     name: "Appointments",
-    icon: UserGroupIcon,
+    icon: CalendarDaysIcon,
     href: "/appointments",
     count: 3,
   },
   {
     name: "Patients",
-    icon: FolderIcon,
+    icon: UserGroupIcon,
     href: "/patients",
     count: 4,
+  },
+  {
+    name: "Dentists",
+    icon: UsersIcon,
+    href: "/dentists",
+    count: 12,
   },
   {
     name: "Services",
@@ -43,21 +50,9 @@ const navigation = [
     href: "/services",
   },
   {
-    name: "Payments",
-    icon: ShoppingCartIcon,
-    href: "/service-requests",
-    count: 12,
-  },
-  // {
-  //   name: "Farmers",
-  //   icon: InboxIcon,
-  //   href: "/farmers",
-  //   count: 12,
-  // },
-  {
-    name: "Dentists",
-    icon: InboxIcon,
-    href: "/dentists",
+    name: "Edu Contents",
+    icon: AcademicCapIcon,
+    href: "/educational-contents",
     count: 12,
   },
   {
@@ -66,30 +61,30 @@ const navigation = [
     href: "/orders",
     count: 12,
   },
-  // {
-  //   name: "Productions",
-  //   icon: ShoppingCartIcon,
-  //   href: "/production",
-  //   count: 12,
-  // },
+  {
+    name: "Payments",
+    icon: BanknotesIcon,
+    href: "/payments",
+    count: 12,
+  },
+  {
+    name: "Category",
+    icon: GiftIcon,
+    href: "/categories",
+    count: 16,
+  },
   {
     name: "Users",
-    icon: UsersIcon,
+    icon: UserCircleIcon,
     href: "/users",
     count: 12,
   },
-  // {
-  //   name: "Settings",
-  //   icon: Cog6ToothIcon,
-  //   href: "/settings",
-  //   count: 12,
-  // },
-  // {
-  //   name: "Category",
-  //   icon: GiftIcon,
-  //   href: "/categories",
-  //   count: 16,
-  // },
+  {
+    name: "Settings",
+    icon: Cog6ToothIcon,
+    href: "/settings",
+    count: 12,
+  },
 ];
 
 export default function Layout() {
