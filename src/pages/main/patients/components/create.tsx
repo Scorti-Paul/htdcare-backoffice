@@ -6,24 +6,18 @@ import Header from "components/Header";
 import { useState } from "react";
 import DoubleButton from "components/buttons/doubleButton";
 import { useNavigate } from "react-router-dom";
-import { useMutation, useQuery } from "react-query";
-import { createProduct } from "api/mutations/products";
+import { useMutation } from "react-query";
+import { createPatient } from "api/mutations/patients";
 import { toast } from "react-toastify";
-import { get } from "api";
 import useUploadImage from "components/hooks/useUploadImage";
 import UploadImage from "components/uploadimage";
-// import Select from "react-select";
-import ReactSelect from 'react-select';
 import DynamicInputComponent from "components/Input/dynamicinputs";
 import { IDynamicInput } from "../types";
 
 const CreatePatient: FC = () => {
-  const [productData, setProductData] = useState<any>("");
+  const [patientData, setPatientData] = useState<any>("");
   const [image, setImage] = useState<any>(null);
   const [tempUrl, setTempUrl] = useState<string>("");
-  const [searchString, setSearchString] = useState<string>("");
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedVendor, setSelectedVendor] = useState<string[]>([]);
   const navigate = useNavigate();
   const [inputs, setInputs] = useState<IDynamicInput[]>([
     { unit: "", price: "" },
@@ -33,38 +27,24 @@ const CreatePatient: FC = () => {
 
   const handleChange = useCallback(
     (e: any) => {
-      setProductData({
-        ...productData,
+      setPatientData({
+        ...patientData,
         [e.target.name]: e.target.value,
       });
     },
-    [productData]
-  );
-
-  const { data: categoryData, isFetching: isFetchingCategory } = useQuery(
-    ["allCategories"],
-    () => get("/categories")
-  );
-  const { data: vendors, isFetching: loadingVendors } = useQuery(
-    ["allvendors", searchString],
-    () =>
-      get("/vendors", {
-        params: {
-          search: { key: "name", value: searchString },
-        },
-      })
+    [patientData]
   );
 
   const { mutateAsync, isLoading } = useMutation({
     mutationFn: (body: any) => {
-      return createProduct(body);
+      return createPatient(body);
     },
     onError: (e) => {
       toast?.error("There was an error");
     },
     onSuccess: () => {
       toast?.success("Product created successfully");
-      navigate("/products");
+      navigate("/patients");
     },
   });
 
@@ -73,29 +53,19 @@ const CreatePatient: FC = () => {
       //
       e?.preventDefault();
 
-      if (productData.name === undefined) {
+      if (patientData.name === undefined) {
         return toast?.error("Name can't be empty");
       }
 
-      if (productData.stock === undefined) {
+      if (patientData.stock === undefined) {
         return toast?.error("Enter current stock of product");
-      }
-
-      if (selectedCategories.length === 0) {
-        return toast?.error("Select a category");
-      }
-
-      if (selectedVendor.length === 0) {
-        return toast?.error("Select at least 1 vendor");
       }
 
       uploadImage(image)
         ?.then((link: string) => {
           mutateAsync({
-            ...productData,
+            ...patientData,
             image: link,
-            vendors: selectedVendor,
-            categories: selectedCategories,
             variants: inputs?.map((item) => {
               return {
                 unit: item.unit,
@@ -109,13 +79,11 @@ const CreatePatient: FC = () => {
         });
     },
     [
-      productData,
+      patientData,
       mutateAsync,
       image,
       uploadImage,
-      selectedCategories,
       inputs,
-      selectedVendor,
     ]
   );
 
@@ -135,14 +103,14 @@ const CreatePatient: FC = () => {
       <div className="md:mt-4 md:px-12">
         <div className="px-4 sm:px-6 lg:px-8">
           <Header
-            title="Create Product"
-            description="Fill out the details to create new product."
+            title="Create New Patient"
+            description="Create a profile for a new patient."
           >
             <Button
-              Icon={<EyeIcon className="w-4" />}
-              text={"Products"}
-              type={"link"}
-              path={"/products"}
+              Icon={<EyeIcon className="w-6" />}
+              text={"Patients"}
+              type={"primary-link"}
+              path={"/patients"}
               onClick={() => null}
               hasIcon={true}
             />
@@ -168,13 +136,43 @@ const CreatePatient: FC = () => {
                       />
                     </div>
                     <div className="w-full grid grid-cols-6 gap-6">
-                      <div className="col-span-5">
+                      <div className="col-span-2">
                         <Input
-                          label="Product name"
+                          label="Surname"
                           name="name"
-                          inputLength="large"
-                          placeholder="eg. Spraying machine"
-                          value={productData["name"] || ""}
+                          inputLength="small"
+                          placeholder="eg. Doe"
+                          value={patientData["name"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="text"
+                          field="input"
+                          autoComplete="true"
+                        />
+                      </div>
+                      <div className="col-span-2">
+                        <Input
+                          label="First name"
+                          name="name"
+                          inputLength="small"
+                          placeholder="eg. John"
+                          value={patientData["name"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="text"
+                          field="input"
+                          autoComplete="true"
+                        />
+                      </div>
+                      <div className="col-span-2">
+                        <Input
+                          label="Other name"
+                          name="name"
+                          inputLength="small"
+                          placeholder="Enter any other name"
+                          value={patientData["name"] || ""}
                           onChange={handleChange}
                           optionalLabel={true}
                           hasShowPassword="disable"
@@ -189,7 +187,7 @@ const CreatePatient: FC = () => {
                           label="Stock"
                           name="stock"
                           onChange={handleChange}
-                          value={productData["stock"] || ""}
+                          value={patientData["stock"] || ""}
                           inputLength="medium"
                           placeholder="Eg. 20"
                           hasShowPassword="disable"
@@ -200,76 +198,12 @@ const CreatePatient: FC = () => {
                         />
                       </div>
 
-                      <div className={"col-span-6 sm:col-span-3"}>
-                        <label
-                          htmlFor="category"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Category
-                        </label>
-                        <div className="mt-1">
-                          <ReactSelect
-                            onInputChange={(e: any) => setSearchString(e)}
-                            className="basic-single"
-                            classNamePrefix="select"
-                            isLoading={isFetchingCategory}
-                            isClearable={true}
-                            isSearchable={true}
-                            onChange={(e: any) =>
-                              setSelectedCategories(
-                                e?.map((item: any) => item.value)
-                              )
-                            }
-                            isMulti={true}
-                            name="category"
-                            options={categoryData?.data?.map((item: any) => {
-                              return {
-                                value: item._id,
-                                label: item.name,
-                              };
-                            })}
-                          />
-                        </div>
-                      </div>
-
-                      <div className={"col-span-6 sm:col-span-3"}>
-                        <label
-                          htmlFor="category"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Select vendor
-                        </label>
-                        <div className="mt-1">
-                          <ReactSelect
-                            onInputChange={(e: any) => setSearchString(e)}
-                            className="select"
-                            isMulti={true}
-                            classNamePrefix="select"
-                            isLoading={loadingVendors}
-                            isClearable={true}
-                            onChange={(e: any) =>
-                              setSelectedVendor(
-                                e?.map((item: any) => item.value)
-                              )
-                            }
-                            isSearchable={true}
-                            name="name"
-                            options={vendors?.data?.map((item: any) => {
-                              return {
-                                value: item._id,
-                                label: item.name,
-                              };
-                            })}
-                          />
-                        </div>
-                      </div>
-
                       <Input
                         label="Additional information"
                         name="description"
                         inputLength="large"
                         placeholder="Extra information about product goes here"
-                        value={productData["description"] || ""}
+                        value={patientData["description"] || ""}
                         onChange={handleChange}
                         type=""
                         field="textarea"
