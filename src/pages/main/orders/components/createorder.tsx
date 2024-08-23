@@ -8,7 +8,7 @@ import { useState } from 'react'
 import DoubleButton from '../../../../components/buttons/doubleButton'
 import { useNavigate } from 'react-router-dom'
 import { useMutation, useQuery } from 'react-query'
-import { createProduct } from '../../../../api/mutations/products'
+import { createPatient } from '../../../../api/mutations/patients'
 import { toast } from 'react-toastify'
 import { get } from '../../../../api'
 import useUploadImage from '../../../../components/hooks/useUploadImage'
@@ -33,7 +33,7 @@ const CreateOrder: FC<{}> = () => {
 
   const { mutateAsync, isLoading } = useMutation({
     mutationFn: (body: any) => {
-      return createProduct(body)
+      return createPatient(body)
     },
     onError: (e) => {
       toast?.error('There was an error')
