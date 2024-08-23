@@ -25,6 +25,20 @@ const CreatePatient: FC = () => {
 
   const { uploadImage, loading } = useUploadImage();
 
+  const genderOptions = [
+    { text: 'Select gender', value: '' },
+    { text: 'Male', value: 'Male' },
+    { text: 'Female', value: 'Female' },
+  ]
+
+  const maritalStatusOptions = [
+    { text: 'Select marital status', value: '' },
+    { text: 'Single', value: 'Single' },
+    { text: 'Married', value: 'Married' },
+    { text: 'Divorced', value: 'Divorced' },
+    { text: 'Windowed', value: 'Windowed' },
+  ]
+
   const handleChange = useCallback(
     (e: any) => {
       setPatientData({
@@ -120,7 +134,7 @@ const CreatePatient: FC = () => {
             <div className="mt-5 md:col-span-2 md:mt-0">
               <form onSubmit={handleSubmission}>
                 <div className="overflow-hidden">
-                  <div className="bg-white px-4 py-5 sm:p-6 sm:block md:flex md:justify-between md:gap-8">
+                  <div className="bg-white py-5  sm:block md:flex md:justify-between md:gap-8">
                     <div className="md:w-5/12">
                       <UploadImage tempUrl={tempUrl} />
                       <Input
@@ -135,73 +149,15 @@ const CreatePatient: FC = () => {
                         optionalLabel={true}
                       />
                     </div>
+
                     <div className="w-full grid grid-cols-6 gap-6">
                       <div className="col-span-2">
                         <Input
                           label="Surname"
-                          name="name"
+                          name="surname"
                           inputLength="large"
                           placeholder="eg. Doe"
-                          value={patientData["name"] || ""}
-                          onChange={handleChange}
-                          optionalLabel={true}
-                          hasShowPassword="disable"
-                          type="text"
-                          field="input"
-                          autoComplete="true"
-                        />
-                      </div>
-                      <div className="col-span-2">
-                        <Input
-                          label="First name"
-                          name="name"
-                          inputLength="small"
-                          placeholder="eg. John"
-                          value={patientData["name"] || ""}
-                          onChange={handleChange}
-                          optionalLabel={true}
-                          hasShowPassword="disable"
-                          type="text"
-                          field="input"
-                          autoComplete="true"
-                        />
-                      </div>
-                      <div className="col-span-2">
-                        <Input
-                          label="Other name"
-                          name="name"
-                          inputLength="small"
-                          placeholder="Enter any other name"
-                          value={patientData["name"] || ""}
-                          onChange={handleChange}
-                          optionalLabel={true}
-                          hasShowPassword="disable"
-                          type="text"
-                          field="input"
-                          autoComplete="true"
-                        />
-                      </div>
-                      <div className="col-span-6">
-                        <Input
-                          label="Phone"
-                          name="phone"
-                          inputLength="small"
-                          placeholder="Enter any other name"
-                          value={patientData["phone"] || ""}
-                          onChange={handleChange}
-                          optionalLabel={true}
-                          hasShowPassword="disable"
-                          type="text"
-                          field="input"
-                          autoComplete="true"
-                        />
-                        
-                        <Input
-                          label="Alternative Phone"
-                          name="alternativePhone"
-                          inputLength="small"
-                          placeholder="Enter any other name"
-                          value={patientData["alternativePhone"] || ""}
+                          value={patientData["surname"] || ""}
                           onChange={handleChange}
                           optionalLabel={true}
                           hasShowPassword="disable"
@@ -211,8 +167,122 @@ const CreatePatient: FC = () => {
                         />
                       </div>
 
-                      <div className="col-span-1">
-                      <Input
+                      <div className="col-span-2">
+                        <Input
+                          label="First name"
+                          name="firstName"
+                          inputLength="small"
+                          placeholder="eg. John"
+                          value={patientData["firstName"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="text"
+                          field="input"
+                          autoComplete="true"
+                        />
+                      </div>
+
+                      <div className="col-span-2">
+                        <Input
+                          label="Other name"
+                          name="otherName"
+                          inputLength="small"
+                          placeholder="Enter any other name"
+                          value={patientData["otherName"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="text"
+                          field="input"
+                          autoComplete="true"
+                        />
+                      </div>
+
+                      <div className="col-span-3">
+                        <Input
+                          label="Phone"
+                          name="phone"
+                          inputLength="small"
+                          placeholder="Enter any other name"
+                          value={patientData["phone"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="tel"
+                          field="input"
+                          autoComplete="true"
+                        />
+                      </div>
+
+                      <div className="col-span-3">
+                        <Input
+                          label="Alternative Phone"
+                          name="alternativePhone"
+                          inputLength="small"
+                          placeholder="Enter any other name"
+                          value={patientData["alternativePhone"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="tel"
+                          field="input"
+                          autoComplete="true"
+                        />
+                      </div>
+
+                      <div className="col-span-2">
+                        <Input
+                          label="Gender"
+                          name="gender"
+                          inputLength="small"
+                          placeholder="Select gender"
+                          value={patientData["gender"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="select"
+                          field="select"
+                          selectOptions={genderOptions}
+                          autoComplete="true"
+                        />
+                      </div>
+                      
+                      <div className="col-span-2">
+                        <Input
+                          label="Marital Status"
+                          name="maritalStatus"
+                          inputLength="small"
+                          placeholder="Select gender"
+                          value={patientData["maritalStatus"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="select"
+                          field="select"
+                          selectOptions={maritalStatusOptions}
+                          autoComplete="true"
+                        />
+                      </div>
+
+                      <div className="col-span-2">
+                        <Input
+                          label="Occupation"
+                          name="occupation"
+                          inputLength="small"
+                          placeholder="Select gender"
+                          value={patientData["occupation"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="text"
+                          field="input"
+                          autoComplete="true"
+                        />
+                      </div>
+
+                      <div className="col-span-6">
+                        <Input
                           label="Email"
                           name="email"
                           inputLength="large"
@@ -221,11 +291,28 @@ const CreatePatient: FC = () => {
                           onChange={handleChange}
                           optionalLabel={true}
                           hasShowPassword="disable"
-                          type="text"
+                          type="email"
                           field="input"
                           autoComplete="true"
                         />
-                        </div>
+                      </div>
+
+                      <div className="col-span-3">
+                        <Input
+                          label="Emergency Phone"
+                          name="emergencyPhone"
+                          inputLength="small"
+                          placeholder="Enter any other name"
+                          value={patientData["emergencyPhone"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="tel"
+                          field="input"
+                          autoComplete="true"
+                        />
+                      </div>
+
                       <div className="col-span-1">
                         <Input
                           label="Stock"
