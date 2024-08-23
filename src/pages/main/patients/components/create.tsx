@@ -140,7 +140,7 @@ const CreatePatient: FC = () => {
                         <Input
                           label="Surname"
                           name="name"
-                          inputLength="small"
+                          inputLength="large"
                           placeholder="eg. Doe"
                           value={patientData["name"] || ""}
                           onChange={handleChange}
@@ -181,7 +181,51 @@ const CreatePatient: FC = () => {
                           autoComplete="true"
                         />
                       </div>
+                      <div className="col-span-6">
+                        <Input
+                          label="Phone"
+                          name="phone"
+                          inputLength="small"
+                          placeholder="Enter any other name"
+                          value={patientData["phone"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="text"
+                          field="input"
+                          autoComplete="true"
+                        />
+                        
+                        <Input
+                          label="Alternative Phone"
+                          name="alternativePhone"
+                          inputLength="small"
+                          placeholder="Enter any other name"
+                          value={patientData["alternativePhone"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="text"
+                          field="input"
+                          autoComplete="true"
+                        />
+                      </div>
 
+                      <div className="col-span-1">
+                      <Input
+                          label="Email"
+                          name="email"
+                          inputLength="large"
+                          placeholder="e.g. you@example.com"
+                          value={patientData["email"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="text"
+                          field="input"
+                          autoComplete="true"
+                        />
+                        </div>
                       <div className="col-span-1">
                         <Input
                           label="Stock"
