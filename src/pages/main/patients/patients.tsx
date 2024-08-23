@@ -19,25 +19,25 @@ const Patients: FC<{}> = () => {
 
   const columns: Column[] = [
     {
-      headerText: "Patient | Phone",
+      headerText: "Patient Code",
+      keys: { type: "text", value: ["patientCode"] },
+      type: "text",
+    },
+    {
+      headerText: "Name | Phone",
       keys: { type: "text", value: ["fullName", "phone"] },
       type: "text",
     },
     {
-      headerText: "Email",
-      keys: { type: "text", value: ["email"] },
+      headerText: "Email | Address",
+      keys: { type: "text", value: ["email", "location.address"] },
       type: "text",
     },
     {
-      headerText: "Address",
-      keys: { type: "currency", value: ["location.address", "location.digitalAddress"] },
+      headerText: "Gender",
+      keys: { type: "text", value: ["gender"] },
       type: "text",
     },
-    // {
-    //   headerText: "Vendor",
-    //   keys: { type: "text", value: ["vendor.name"] },
-    //   type: "text",
-    // },
     {
       headerText: "Created On",
       type: "date",
@@ -93,10 +93,10 @@ const Patients: FC<{}> = () => {
             description="A list of all the patients in your account including their name, title, email and role."
           >
             <Button
-              Icon={<PlusCircleIcon className="w-4" />}
-              text={"Add product"}
-              type={"link"}
-              path={"/create-patient"}
+              Icon={<PlusCircleIcon className="w-6" />}
+              text={"New Patient"}
+              type={"primary-link"}
+              path={"create-patient"}
               onClick={() => null}
               hasIcon={true}
             />
