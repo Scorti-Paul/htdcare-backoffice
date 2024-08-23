@@ -12,7 +12,7 @@ import usePagination from "../../../components/hooks/usePagination";
 import { useNavigate } from "react-router-dom";
 import ViewBranch from "./components/view";
 
-const Branches: FC<{}> = () => {
+const Payments: FC<{}> = () => {
   const [showView, setShowView] = useState(false);
   const [selected, setSelected] = useState<any>({});
 
@@ -139,4 +139,4 @@ const Branches: FC<{}> = () => {
   );
 };
 
-export default Branches;
+export default Payments;
