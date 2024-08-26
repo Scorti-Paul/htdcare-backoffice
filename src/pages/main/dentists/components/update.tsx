@@ -14,7 +14,7 @@ import UploadImage from "components/uploadimage";
 import { IDynamicInput } from "pages/main/patients/types";
 import Select from "react-select";
 import DynamicInputComponent from "components/Input/dynamicinputs";
-import { updateProduce } from "api/mutations/produce";
+import { updateDentist } from "api/mutations/dentist";
 
 const UpdateDentist: FC<{}> = () => {
   const [produceData, setProduceData] = useState<any>("");
@@ -54,7 +54,7 @@ const UpdateDentist: FC<{}> = () => {
 
   const { mutateAsync, isLoading } = useMutation({
     mutationFn: (body: any) => {
-      return updateProduce({ ...body, id: state?._id });
+      return updateDentist({ ...body, id: state?._id });
     },
     onError: (e) => {
       toast?.error("There was an error");
