@@ -4,6 +4,7 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
+
 export default function Input({
   label,
   optionalLabel,
@@ -22,6 +23,8 @@ export default function Input({
   id,
   desc,
   disable,
+  min,
+  max
 }: InputProps) {
   const [inputBlur, setInputBlur] = useState(false);
 
@@ -142,7 +145,8 @@ export default function Input({
               required={required}
               disabled={disable}
               autoComplete={autoComplete}
-              min={0}
+              min={min}
+              max={max}
               placeholder={placeholder}
               className={
                 !inputBlur
@@ -314,7 +318,7 @@ export default function Input({
             <label className="block text-sm font-medium text-darkBlue">
               {label}
             </label>
-            <div className="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
+            <div className="mt-1 flex justify-center rounded-md px-6 pt-5 pb-6">
               <div className="space-y-1 text-center">
                 {/* <svg
                   className="mx-auto h-12 w-12 text-gray-400"
@@ -333,7 +337,7 @@ export default function Input({
                 <div className="flex text-sm text-gray-600">
                   <label
                     htmlFor={name}
-                    className="relative cursor-pointer rounded-md bg-white font-medium text-green-600 focus-within:outline-none focus-within:ring-offset-2 hover:text-green-500 text-center"
+                    className="relative cursor-pointer rounded-md font-medium px-8 py-3 border-2 border-primary-300 text-primary-500 focus-within:outline-none focus-within:ring-offset-2 hover:text-primary-600 text-center"
                   >
                     <p className="text-center">Upload a file</p>
                     <input
@@ -347,7 +351,7 @@ export default function Input({
                   </label>
                   {/* <p className="pl-1">or drag and drop</p> */}
                 </div>
-                <p className="text-xs text-gray-500">PNG, JPG up to 10MB</p>
+                {/* <p className="text-xs text-gray-500">PNG, JPG up to 10MB</p> */}
               </div>
             </div>
           </div>
