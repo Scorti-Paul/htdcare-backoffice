@@ -24,7 +24,9 @@ export default function Input({
   desc,
   disable,
   min,
-  max
+  max, 
+  minLength,
+  maxLength
 }: InputProps) {
   const [inputBlur, setInputBlur] = useState(false);
 
@@ -147,6 +149,8 @@ export default function Input({
               autoComplete={autoComplete}
               min={min}
               max={max}
+              minLength={minLength}
+              maxLength={maxLength}
               placeholder={placeholder}
               className={
                 !inputBlur
