@@ -10,7 +10,6 @@ import { useQuery } from "react-query";
 import { get } from "api";
 
 type Inputs = {
-  dentist: string;
   allergies: string;
   diagnosis: string;
   clinicalFindings: string;
@@ -21,6 +20,7 @@ export default function CreateMedicalHistory({
   show,
   setShow,
   refetch,
+  patientID
 }: any) {
   const {
     register,
@@ -31,17 +31,17 @@ export default function CreateMedicalHistory({
 
   const [loading, setLoading] = useState(false);
   const [, setSearchString] = useState<string>("");
-  const [, setSelectedDentist] = useState<string[]>([]);
+  const [selectedDentist, setSelectedDentist] = useState<string[]>([]);
 
   const { data: dentistData, isFetching: isFetchingDentist } = useQuery(
     ["dentists"],
-    () => get("/dentists")
+    () => get("/dentists", { params: { populate: ['userID'] } })
   );
-  console.log(register)
+
 
   const invokeCreateMedicalHistory: SubmitHandler<Inputs> = (data) => {
     setLoading(true);
-    createMedicalHistory({ ...data })
+    createMedicalHistory({ dentist: selectedDentist,  patient: patientID, ...data })
       ?.then((response) => {
         console.log(response);
         setLoading(false);
@@ -55,6 +55,7 @@ export default function CreateMedicalHistory({
         setLoading(false);
       });
   };
+
   return (
     <Modal
       show={show}
@@ -72,34 +73,29 @@ export default function CreateMedicalHistory({
             >
               {/* Breadcrumb */}
               <div className="mt-1">
-              <label htmlFor="allergies" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="dentist" className="block text-sm font-medium text-gray-700">
                   Dentist
                 </label>
                 <Select
                   onInputChange={(e) => setSearchString(e)}
                   className="basic-single"
-                  {...register("dentist")}
                   classNamePrefix="select"
                   isLoading={isFetchingDentist}
                   isClearable={true}
                   isSearchable={true}
-                  onChange={(e) =>
-                    setSelectedDentist(
-                      e?.map((item: any) => item.value)
-                    )
-                  }
-                  isMulti={true}
-                  name="category"
+                  onChange={(e: any) => setSelectedDentist(e?.value)}
+                  isMulti={false}
+                  name="dentists"
                   options={dentistData?.data?.map((item: any) => {
                     return {
                       value: item._id,
-                      label: item.name,
+                      label: item?.userID?.name,
                     };
                   })}
                 />
               </div>
 
-              <div>
+              <div className="mt-3">
                 <label htmlFor="allergies" className="block text-sm font-medium text-gray-700">
                   Allergies
                 </label>
@@ -110,7 +106,7 @@ export default function CreateMedicalHistory({
                   className={` ${errors?.allergies
                     ? "focus:border-rose-500 focus:ring-rose-500"
                     : "focus:border-green-500 focus:ring-green-500"
-                    } mt-2 block w-full text-black rounded-md border-gray-300 shadow-sm py-3 placeholder:text-gray-400  sm:text-sm`}
+                    } mt-1 block w-full text-black rounded-md border-gray-300 shadow-sm py-3 placeholder:text-gray-400  sm:text-sm`}
                   type="text"
                 />
                 {errors?.allergies && (
@@ -122,8 +118,8 @@ export default function CreateMedicalHistory({
                   </span>
                 )}
               </div>
-              <div>
 
+              <div className="mt-3">
                 <label htmlFor="diagnosis" className="block text-sm font-medium text-gray-700">
                   Diagnosis
                 </label>
@@ -134,7 +130,7 @@ export default function CreateMedicalHistory({
                   className={` ${errors?.diagnosis
                     ? "focus:border-rose-500 focus:ring-rose-500"
                     : "focus:border-green-500 focus:ring-green-500"
-                    } mt-2 block w-full text-black rounded-md border-gray-300 shadow-sm py-3 placeholder:text-gray-400  sm:text-sm`}
+                    } mt-1 block w-full text-black rounded-md border-gray-300 shadow-sm py-3 placeholder:text-gray-400  sm:text-sm`}
                   type="text"
                 />
                 {errors?.diagnosis && (
@@ -147,7 +143,7 @@ export default function CreateMedicalHistory({
                 )}
               </div>
 
-              <div>
+              <div className="mt-3">
                 <label htmlFor="clinicalFindings" className="block text-sm font-medium text-gray-700">
                   Clinical Findings
                 </label>
@@ -155,7 +151,7 @@ export default function CreateMedicalHistory({
                   {...register("clinicalFindings")}
                   id="clinicalFindings"
                   className={`focus:border-green-500 focus:ring-green-500
-                  mt-2 block w-full text-black rounded-md border-gray-300 shadow-sm py-3 placeholder:text-gray-400  sm:text-sm`}></textarea>
+                  mt-1 block w-full text-black rounded-md border-gray-300 shadow-sm py-3 placeholder:text-gray-400  sm:text-sm`}></textarea>
               </div>
 
               <div className=" pt-4 flex flex-row-reverse mt-2">
