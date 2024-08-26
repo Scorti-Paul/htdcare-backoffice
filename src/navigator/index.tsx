@@ -112,7 +112,7 @@ const router = createBrowserRouter([
         element: <Dentists />,
       },
       {
-        path: "create-dentist",
+        path: "/dentists/create-dentist",
         element: <CreateDentist />,
       },
       {
