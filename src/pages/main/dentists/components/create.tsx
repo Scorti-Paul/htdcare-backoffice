@@ -6,66 +6,54 @@ import Header from "components/Header";
 import { useState } from "react";
 import DoubleButton from "components/buttons/doubleButton";
 import { useNavigate } from "react-router-dom";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { toast } from "react-toastify";
-import { get } from "api";
 import useUploadImage from "components/hooks/useUploadImage";
 import UploadImage from "components/uploadimage";
-import DynamicInputComponent from "components/Input/dynamicinputs";
-import { IDynamicInput } from "pages/main/patients/types";
-import Select from "react-select";
-import { createProduce } from "api/mutations/produce";
+import { createDentist } from "api/mutations/dentist";
+import { registerUser } from "api/mutations/users";
 
 const CreateDentist: FC<{}> = () => {
-  const [produceData, setProduceData] = useState<any>("");
+  const [dentistData, setDentistData] = useState<any>("");
   const [image, setImage] = useState<any>(null);
   const [tempUrl, setTempUrl] = useState<string>("");
-  const [searchString, setSearchString] = useState<string>("");
-  const [inputs, setInputs] = useState<IDynamicInput[]>([
-    { unit: "", price: "" },
-  ]);
-  const [selectedFarmers, setSelectedFarmers] = useState<string[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   const navigate = useNavigate();
   const { uploadImage, loading } = useUploadImage();
 
   const handleChange = useCallback(
     (e: any) => {
-      setProduceData({
-        ...produceData,
+      setDentistData({
+        ...dentistData,
         [e.target.name]: e.target.value,
       });
     },
-    [produceData]
+    [dentistData]
   );
-
-  const { data: farmers, isFetching: loadingFamers } = useQuery(
-    ["farmersSearchByName", searchString],
-    () =>
-      get("/farmers", {
-        params: {
-          search: { key: "firstName", value: searchString },
-        },
-      })
-  );
-
-  const typeOption = [
-    { value: "", label: "Select type" },
-    { value: "crop", label: "Crop" },
-    { value: "livestock", label: "Livestock" },
-  ];
 
   const { mutateAsync, isLoading } = useMutation({
     mutationFn: (body: any) => {
-      return createProduce(body);
+      return createDentist(body);
     },
     onError: (e) => {
       toast?.error("There was an error");
     },
     onSuccess: () => {
-      toast?.success("Produce created successfully");
-      navigate("/produce");
+      toast?.success("Dentist created successfully");
+      navigate("/dentists");
+    },
+  });
+
+  const { mutateAsync: userMutateAsync, isLoading: isUserLoading } = useMutation({
+    mutationFn: (body: any) => {
+      return registerUser(body);
+    },
+    onError: (e) => {
+      toast?.error("There was an error");
+    },
+    onSuccess: () => {
+      toast?.success("Dentist created successfully");
+      navigate("/dentists");
     },
   });
 
@@ -73,47 +61,47 @@ const CreateDentist: FC<{}> = () => {
     //
     e?.preventDefault();
 
-    if (produceData.name === undefined) {
+    if (dentistData.name === undefined) {
       return toast?.error("Name can't be empty");
     }
 
-    if (produceData.type === undefined) {
-      return toast?.error("Select produce type");
-    }
+    // if (dentistData.type === undefined) {
+    //   return toast?.error("Select dentist type");
+    // }
 
-    if (selectedFarmers?.length < 1) {
-      return toast?.error("Select at least 1 farmer");
-    }
+    // if (dentistData.stock === undefined) {
+    //   return toast?.error("Quantity can't be empty");
+    // }
 
-    if (produceData.stock === undefined) {
-      return toast?.error("Quantity can't be empty");
-    }
+    console.log(dentistData)
 
-    if (inputs.length < 1) {
-      return toast?.error("Add at least one selling variants");
-    }
+
 
     // add status
     uploadImage(image)
       ?.then((link: string) => {
         mutateAsync({
-          ...produceData,
-          image: link,
-          categories: selectedCategories,
-          farmers: selectedFarmers,
-          produceType: produceData.type,
-          statuss: produceData.status,
-          variants: inputs?.map((item) => {
-            return {
-              unit: item.unit,
-              price: parseInt(item.price),
-            };
-          }),
+          ...dentistData,
+          clinic: {
+            name: dentistData.clinicName,
+            phone: dentistData.clinicPhone,
+            address: dentistData.clinicAddress,
+            email: dentistData.clinicEmail,
+          },
+          status: "Active",
         });
-        // navigate("/produce");
+        // navigate("/dentist");
+        userMutateAsync({
+          name: dentistData.name,
+          email: dentistData.email,
+          phone: dentistData.phone,
+          profilePicture: link,
+          role: "dentist",
+          password: "0000000"
+        })
       })
       ?.then(() => {
-        setProduceData("");
+        setDentistData("");
         setImage(null);
         setTempUrl("");
       })
@@ -122,10 +110,10 @@ const CreateDentist: FC<{}> = () => {
       });
   };
 
-  const { data: categoryData, isFetching: isFetchingCategory } = useQuery(
-    ["categoriesSearch"],
-    () => get("/categories")
-  );
+  // const { data: categoryData, isFetching: isFetchingCategory } = useQuery(
+  //   ["categoriesSearch"],
+  //   () => get("/categories")
+  // );
 
   const createTemp = useCallback(() => {
     if (image) {
@@ -138,25 +126,20 @@ const CreateDentist: FC<{}> = () => {
     createTemp();
   }, [createTemp]);
 
-  const activeStateOption = [
-    { value: "", label: "Select State" },
-    { value: "Active", label: "Active" },
-    { value: "Inactive", label: "Inactive" },
-  ];
 
   return (
     <>
       <div className="md:mt-4 md:px-12">
         <div className="px-4 sm:px-6 lg:px-8">
           <Header
-            title="Create Produce"
-            description="Fill out the details to sign up a new produce."
+            title="Create Dentist"
+            description="Fill out the details to create new dentist."
           >
             <Button
               Icon={<EyeIcon className="w-4" />}
-              text={"Produce"}
-              type={"link"}
-              path={"/produce"}
+              text={"Dentists"}
+              type={"secondary-link"}
+              path={"/dentists"}
               onClick={() => null}
               hasIcon={true}
             />
@@ -166,7 +149,7 @@ const CreateDentist: FC<{}> = () => {
             <div className="mt-5 md:col-span-2 md:mt-0">
               <form onSubmit={handleSubmission}>
                 <div className="overflow-hidden">
-                  <div className="bg-white px-4 py-5 sm:p-6 sm:block md:flex md:justify-between md:gap-8">
+                  <div className="bg-white px-4 py-5 sm:p-6 sm:block">
                     <div className="md:w-5/12">
                       <UploadImage tempUrl={tempUrl} />
                       <Input
@@ -181,13 +164,116 @@ const CreateDentist: FC<{}> = () => {
                         optionalLabel={true}
                       />
                     </div>
+
                     <div className="w-full grid grid-cols-6 gap-6">
                       <Input
-                        label="Produce name"
+                        label="Name"
                         name="name"
+                        inputLength="small"
+                        placeholder="eg. Amartey James"
+                        value={dentistData["name"] || ""}
+                        onChange={handleChange}
+                        optionalLabel={true}
+                        hasShowPassword="disable"
+                        type="text"
+                        field="input"
+                        autoComplete="true"
+                      />
+
+                      <Input
+                        label="Specialty"
+                        name="specialization"
+                        inputLength="small"
+                        placeholder="eg. Endodontist"
+                        value={dentistData["specialization"] || ""}
+                        onChange={handleChange}
+                        optionalLabel={true}
+                        hasShowPassword="disable"
+                        type="text"
+                        field="input"
+                        autoComplete="true"
+                      />
+
+                      <Input
+                        label="Years of Experience"
+                        name="yearsOfExperience"
+                        onChange={handleChange}
+                        value={dentistData["yearsOfExperience"] || ""}
+                        inputLength="small"
+                        placeholder="Eg. 20"
+                        hasShowPassword="disable"
+                        type="number"
+                        field="input"
+                        min={0}
+                        autoComplete="true"
+                        optionalLabel={true}
+                      />
+
+
+                      <Input
+                        label="License Number"
+                        name="licenseNumber"
                         inputLength="medium"
-                        placeholder="eg. Orange"
-                        value={produceData["name"] || ""}
+                        placeholder="eg. MDC/RN/9633"
+                        value={dentistData["licenseNumber"] || ""}
+                        onChange={handleChange}
+                        optionalLabel={true}
+                        hasShowPassword="disable"
+                        type="text"
+                        field="input"
+                        autoComplete="true"
+                      />
+
+                      <Input
+                        label="Phone"
+                        name="Phone"
+                        inputLength="medium"
+                        placeholder="eg. Enter dentist phone number"
+                        value={dentistData["Phone"] || ""}
+                        onChange={handleChange}
+                        optionalLabel={true}
+                        hasShowPassword="disable"
+                        type="tel"
+                        field="input"
+                        maxLength={10}
+                        autoComplete="true"
+                      />
+
+                      <Input
+                        label="Email"
+                        name="email"
+                        inputLength="large"
+                        placeholder="eg. you@example.com"
+                        value={dentistData["email"] || ""}
+                        onChange={handleChange}
+                        optionalLabel={true}
+                        hasShowPassword="disable"
+                        type="email"
+                        field="input"
+                        autoComplete="true"
+                      />
+
+                      <Input
+                        label="Short Bio"
+                        name="bio"
+                        inputLength="large"
+                        placeholder="Write a short bio about yourself here"
+                        value={dentistData["bio"] || ""}
+                        onChange={handleChange}
+                        type=""
+                        field="textarea"
+                        autoComplete="true"
+                      />
+
+                      <hr className="col-span-6 border-gray-100" />
+
+                      <h3 className="col-span-6 text-darkBlue font-medium">Dentist Clinic Information</h3>
+                      <Input
+                        label="Clinic Name"
+                        name="clinicName"
+                        inputLength="medium"
+                        placeholder="Enter your clinic name"
+                        value={dentistData["clinicName"] || ""}
                         onChange={handleChange}
                         optionalLabel={true}
                         hasShowPassword="disable"
@@ -198,37 +284,54 @@ const CreateDentist: FC<{}> = () => {
 
                       <div className="col-span-3">
                         <Input
-                          label="Propduce Type"
-                          name="type"
+                          label="Clinic Phone"
+                          name="clinicPhone"
                           onChange={handleChange}
-                          value={produceData["type"] || ""}
+                          value={dentistData["clinicPhone"] || ""}
                           inputLength="medium"
-                          placeholder="Eg. 20"
+                          placeholder="Enter your clinic office phone number"
                           hasShowPassword="disable"
-                          type="number"
-                          field="select"
-                          selectOptions={typeOption}
+                          type="tel"
+                          field="input"
+                          maxLength={10}
                           autoComplete="true"
                           optionalLabel={true}
                         />
                       </div>
+
                       <div className="col-span-3">
                         <Input
-                          label="Stock"
-                          name="stock"
+                          label="Clinic Email"
+                          name="clinicEmail"
                           onChange={handleChange}
-                          value={produceData["stock"] || ""}
+                          value={dentistData["clinicEmail"] || ""}
                           inputLength="medium"
-                          placeholder="Eg. 20"
+                          placeholder="Enter your clinic office email address"
                           hasShowPassword="disable"
-                          type="number"
+                          type="email"
                           field="input"
                           autoComplete="true"
                           optionalLabel={true}
                         />
                       </div>
 
-                      <div className={"col-span-6 sm:col-span-3"}>
+                      <div className="col-span-3">
+                        <Input
+                          label="Clinic Address"
+                          name="clinicAddress"
+                          onChange={handleChange}
+                          value={dentistData["clinicAddress"] || ""}
+                          inputLength="medium"
+                          placeholder="Enter clinic address"
+                          hasShowPassword="disable"
+                          type="text"
+                          field="input"
+                          autoComplete="true"
+                          optionalLabel={true}
+                        />
+                      </div>
+
+                      {/* <div className={"col-span-6 sm:col-span-3"}>
                         <label
                           htmlFor="category"
                           className="block text-sm font-medium text-gray-700"
@@ -258,90 +361,12 @@ const CreateDentist: FC<{}> = () => {
                             })}
                           />
                         </div>
-                      </div>
-
-                      <div className={"col-span-6 sm:col-span-3"}>
-                        <label
-                          htmlFor="category"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Select Farmers
-                        </label>
-                        <div className="mt-1">
-                          <Select
-                            onInputChange={(e) => setSearchString(e)}
-                            className="select"
-                            isMulti={true}
-                            classNamePrefix="select"
-                            isLoading={loadingFamers}
-                            isClearable={true}
-                            onChange={(e) =>
-                              setSelectedFarmers(
-                                e?.map((item: any) => item.value)
-                              )
-                            }
-                            isSearchable={true}
-                            name="name"
-                            options={farmers?.data?.map((item: any) => {
-                              return {
-                                value: item._id,
-                                label: item.firstName + " " + item?.surname,
-                              };
-                            })}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="col-span-3">
-                        <Input
-                          label="Active State"
-                          name="status"
-                          onChange={handleChange}
-                          value={produceData["status"] || ""}
-                          inputLength="medium"
-                          placeholder=""
-                          hasShowPassword="disable"
-                          type="text"
-                          field="select"
-                          selectOptions={activeStateOption}
-                          autoComplete="true"
-                          optionalLabel={true}
-                        />
-                      </div>
-
-                      <Input
-                        label="Additional information"
-                        name="description"
-                        inputLength="large"
-                        placeholder="Extra information about product goes here"
-                        value={produceData["description"] || ""}
-                        onChange={handleChange}
-                        type=""
-                        field="textarea"
-                        autoComplete="true"
-                      />
-
-                      <hr className="col-span-6 border-gray-100" />
-
-                      <div>
-                        <label
-                          htmlFor="category"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Variants
-                        </label>
-                      </div>
-                      <div className="col-span-6 sm:col-span-6">
-                        <DynamicInputComponent
-                          inputs={inputs}
-                          setInputs={setInputs}
-                        />
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   <DoubleButton
                     loading={isLoading || loading}
-                    buttonText="Save produce"
+                    buttonText="Save dentist"
                     onClick={handleSubmission}
                   />
                 </div>
