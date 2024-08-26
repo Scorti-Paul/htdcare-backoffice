@@ -204,7 +204,7 @@ export default function ViewPatient() {
       </div>
       <Suspense fallback={<TopLoader />}>
         <div className="flex justify-center ml-10">
-          <CreateMedicalHistory show={showAdd} setShow={setShowAdd} refetch={refetch} />
+          <CreateMedicalHistory show={showAdd} setShow={setShowAdd} refetch={refetch} patientID={state?._id} />
         </div>
       </Suspense>
     </>
