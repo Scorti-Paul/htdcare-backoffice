@@ -86,7 +86,7 @@ const Patients: FC<{}> = () => {
         <div className="px-4 sm:px-6 lg:px-8">
           <Header
             title="Patients"
-            description="A list of all the patients in your account including their name, title, email and role."
+            description="A list of all the patients."
           >
             <Button
               Icon={<PlusCircleIcon className="w-6" />}
