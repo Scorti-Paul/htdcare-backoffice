@@ -36,6 +36,7 @@ import UpdateDentist from "pages/main/dentists/components/update";
 import Appointments from "pages/main/appointments";
 import UpdateAppointment from "pages/main/appointments/components/update";
 import CreateAppointment from "pages/main/appointments/components/create";
+import ViewPatient from "pages/main/patients/components/view";
 
 const router = createBrowserRouter([
   {
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
       {
         path: "/patients",
         element: <Patients />,
+      },
+      {
+        path: "/patients/patient",
+        element: <ViewPatient />,
       },
       {
         path: "/patients/create-patient",
