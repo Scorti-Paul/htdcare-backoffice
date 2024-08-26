@@ -14,7 +14,8 @@ import {
   AcademicCapIcon,
   BanknotesIcon,
   CalendarDaysIcon,
-  UserCircleIcon
+  UserCircleIcon,
+  PowerIcon
 } from "@heroicons/react/24/outline";
 import logo from "assets/images/logo-white.png";
 import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
@@ -255,36 +256,27 @@ export default function Layout() {
                   ))}
                 </nav>
               </div>
-              {/* <div className="flex justify-between items-center flex-shrink-0 bg-green-700 p-4">
-                <Link to="users/user/profile" className="hover:cursor-pointer">
-                  <div className="group block w-full flex-shrink-0">
-                    <div className="flex items-center">
-                      <div>
-                        <img
-                          className="inline-block h-9 w-9 rounded-full"
-                          src={user?.image}
-                          alt={user?.name}
-                        />
-                      </div>
-                      <div className="ml-3">
-                        <p className="text-sm font-medium text-white">
-                          {user?.name}
-                        </p>
-                        <p className="text-xs font-medium text-green-300 group-hover:text-green-200">
-                          View profile
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-                <button className="text-base  font-medium text-green-300 transition-all p-2 rounded-full duration-300 hover:text-white hover:bg-green-600  hover:cursor-pointer" onClick={() => removeCookie("accessToken")}>
-                  <PowerIcon
-                    className="w-4"
-                  />{" "}
-                </button>
-              </div> */}
             </div>
           </div>
+
+          {/* Top Nav */}
+          <div className="border shadow-sm w-full px-4 py-2">
+            <div className="flex justify-between items-center flex-shrink-0 ml-[19.4rem] mr-12">
+              <Link to="users/user/profile" className="hover:cursor-pointer">
+                <div className="group block w-full flex-shrink-0">
+                  Hey! Welcome {user?.name.split(' ')[0]}
+                </div>
+              </Link>
+              <div>
+                <button className="text-base  font-medium text-gray-800 transition-all p-2 rounded-full duration-300 hover:text-darkBlue/70  hover:cursor-pointer flex gap-1" onClick={() => removeCookie("accessToken")}>
+                  <PowerIcon
+                    className="w-4" strokeWidth={2}
+                  />{" "} Logout
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div className="flex flex-1 flex-col md:pl-64">
             <div className="sticky top-0 z-10 bg-green-100 pl-1 pt-1 sm:pl-3 sm:pt-3 md:hidden">
               <button
