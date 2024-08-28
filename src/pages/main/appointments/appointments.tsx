@@ -20,24 +20,23 @@ const Appointments: FC<{}> = () => {
 
   const columns: Column[] = [
     {
-      headerText: "Branch Manager",
-      keys: { type: "text", value: ["name", "phone"] },
+      headerText: "Patient",
+      keys: { type: "text", value: ["patient.firstName", "patient.email"] },
+      type: "text",
+    }, 
+    {
+      headerText: "Dentist",
+      keys: { type: "text", value: ["dentist.specialization", "dentist.licenseNumber"] },
       type: "text",
     },
     {
-      headerText: "Email | Address",
-      keys: { type: "text", value: ["email", "address"] },
+      headerText: "Service",
+      keys: { type: "text", value: ["service.name", "service.price"] },
       type: "text",
     },
     {
-      headerText: "Sales | Landmark",
-      keys: { type: "text", value: ["location", "landmark"] },
-      type: "text",
-    },
-    {
-      headerText: "Type",
-      keys: { type: "text", value: ["type"] },
-
+      headerText: "Status",
+      keys: { type: "text", value: ["status"] },
       type: "text",
     },
     {
@@ -65,7 +64,7 @@ const Appointments: FC<{}> = () => {
           onClick: (e, dataFromTable) => {
             e?.preventDefault();
             setSelected(dataFromTable);
-            navigate("update-branch", { state: dataFromTable });
+            navigate("update-appointment", { state: dataFromTable });
           },
         },
         {
@@ -81,8 +80,8 @@ const Appointments: FC<{}> = () => {
 
   const { Pagination, page, limit } = usePagination(1, 10);
 
-  const { data, isFetching } = useQuery(["branchList", page], () =>
-    get("/vendors", { params: { page, limit } })
+  const { data, isFetching } = useQuery(["appointmentsList", page], () =>
+    get("/appointments", { params: { page, limit, populate: ["service", "patient", "dentist"] } })
   );
 
   return (
@@ -90,14 +89,14 @@ const Appointments: FC<{}> = () => {
       <div className="md:mt-4 md:px-12">
         <div className="px-4 sm:px-6 lg:px-8">
           <Header
-            title="Branches"
-            description="A list of all the branches in your account including their name, title, email and role."
+            title="Appointments"
+            description="A list of all appointments."
           >
             <Button
               Icon={<PlusCircleIcon className="w-4" />}
-              text={"Add branch"}
-              type={"link"}
-              path={"/createbranch"}
+              text={"New Appointment"}
+              type={"primary-link"}
+              path={"schedule-appointment"}
               onClick={() => null}
               hasIcon={true}
             />
