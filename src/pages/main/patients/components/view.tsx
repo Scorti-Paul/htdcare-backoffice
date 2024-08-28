@@ -8,12 +8,12 @@ import Table from "components/Table";
 import { Column } from "components/Table/types";
 import usePagination from "hooks/usePagination";
 import { useQuery } from "react-query";
-import { get } from "api";
 import { MoonLoader } from "react-spinners";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import { Suspense, useCallback, useState } from "react";
 import TopLoader from "components/loaders/top";
 import CreateMedicalHistory from "pages/main/medicalHistory/components/create";
+import { getPatientMedicalHistories } from "api/mutations/dentist";
 
 
 export default function ViewPatient() {
@@ -51,15 +51,15 @@ export default function ViewPatient() {
   const { Pagination, page, limit } = usePagination(1, 10);
 
   const { data, isFetching, refetch } = useQuery(["medicalHistoryList", page], () =>
-    get("/medical-histories", {
-      params: { page, limit, patientID: state?._id, populate: ["patients"] },
+    getPatientMedicalHistories({
+      params: { page, limit, populate: ["dentist"], patient: state?._id },
     })
   );
 
   const columns: Column[] = [
     {
-      headerText: "Dentist",
-      keys: { type: "text", value: ["name"] },
+      headerText: "Clinic",
+      keys: { type: "text", value: ["dentist.clinic.name", "dentist.clinic.phone"] },
       type: "text",
     },
     {
