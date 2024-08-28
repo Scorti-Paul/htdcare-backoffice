@@ -1,11 +1,6 @@
-import { Fragment } from "react";
-import defaultImg from "assets/images/defaultImage.jpg";
 import {
   ChevronRightIcon,
-  EnvelopeIcon,
-  PhoneIcon,
 } from "@heroicons/react/20/solid";
-import { UserIcon, WrenchScrewdriverIcon } from "@heroicons/react/24/outline";
 import moment from "moment";
 
 export default function ViewService({ selected }: any) {
@@ -44,45 +39,15 @@ export default function ViewService({ selected }: any) {
                     <h3 className="text-2xl font-medium leading-6 text-black">
                       {selected?.name}
                     </h3>
-                    <div className="flex space-x-6">
-                      <a href={`mailto:${selected?.vendor?.email}`}>
-                        <button
-                          className={`inline-flex gap-1 w-full justify-center font-medium rounded-lg border text-black border-gray-100 px-4 py-2 text-base shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:col-start-2 sm:text-sm `}
-                        >
-                          <EnvelopeIcon
-                            className="-ml-2 h-5 w-5 text-black"
-                            aria-hidden="true"
-                          />
-                          <span>Message</span>
-                        </button>
-                      </a>
-                      <a className="" href={`tel:${selected?.vendor?.phone}`}>
-                        <button
-                          className={`inline-flex gap-1 w-full justify-center font-medium rounded-lg border-0 border-transparent bg-green-500 px-4 py-2 text-base text-white shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm`}
-                        >
-                          <PhoneIcon
-                            className="-ml-2 h-5 w-5 text-white"
-                            aria-hidden="true"
-                          />
-                          <span>Call</span>
-                        </button>
-                      </a>
-                    </div>
-                  </div>
-                  <div className="my-3">
                     <div>
-                      <div className="flex space-x-5">
-                        <div>
-                          <label className="text-gray-400 font-light">
-                            Created on:{" "}
-                          </label>
-                          <span className="text-gray-600 font-light">
-                            {moment(selected?.createdAt)?.format(
-                              "MMM DD, YYYY"
-                            )}
-                          </span>
-                        </div>
-                      </div>
+                      <label className="text-gray-400 font-light">
+                        Created on:{" "}
+                      </label>
+                      <span className="text-gray-600 font-light">
+                        {moment(selected?.createdAt)?.format(
+                          "MMM DD, YYYY"
+                        )}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -92,68 +57,23 @@ export default function ViewService({ selected }: any) {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col gap-3">
                     <span>
+                      Service Rate:{" "}
                       <span className="text-gray-800 text-base">
-                        <img
-                          className=""
-                          src={selected?.image ? selected?.image : defaultImg}
-                          alt=""
-                        />
+                        GHS {selected?.price}
+                      </span>
+                    </span>
+                    <span>
+                      Description:{" "}
+                      <span className="text-gray-800 text-base">
+                        {selected?.description}
                       </span>
                     </span>
                   </div>
-
                   <div className="flex flex-col gap-3">
-                    <div className="flex gap-2 items-center text-gray-600">
-                      <WrenchScrewdriverIcon className="w-6" />
-                      <span>Service Details</span>
-                    </div>
-
                     <span>
-                      Category:{" "}
+                      Duration:{" "}
                       <span className="text-gray-800 text-base">
-                        {selected?.category?.name}
-                      </span>
-                    </span>
-                    <span>
-                      Seller's Price:{" "}
-                      <span className="text-gray-800 text-base">
-                        GHS {selected?.sellersPrice?.toFixed(2)}
-                      </span>
-                    </span>
-                    <span>
-                      Cost Price:{" "}
-                      <span className="text-gray-800 text-base">
-                        GHS {selected?.costPrice?.toFixed(2)}
-                      </span>
-                    </span>
-                    <span>
-                      Quantity:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.stock}
-                      </span>
-                    </span>
-                    <span>
-                      Working Hours:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.workingHours}
-                      </span>
-                    </span>
-                    <span>
-                      Rate Unit:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.rateUnit}
-                      </span>
-                    </span>
-                    <span>
-                      Measuring Unit:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.measuringUnit}
-                      </span>
-                    </span>
-                    <span>
-                      Terms:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.terms}
+                        {selected?.duration} minutes
                       </span>
                     </span>
                     <span>
@@ -166,47 +86,6 @@ export default function ViewService({ selected }: any) {
                         }
                       >
                         {selected?.status}
-                      </span>
-                    </span>
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    <div className="flex gap-2 mt-2 items-center text-gray-600">
-                      <UserIcon className="w-6" />
-                      <span>Vendor</span>
-                    </div>
-                    <span>
-                      Name:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.vendor?.name}
-                      </span>
-                    </span>
-                    <span>
-                      Email:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.vendor?.email}
-                      </span>
-                    </span>
-                    <span>
-                      Phone:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.vendor?.phone}
-                      </span>
-                    </span>
-                    <span>
-                      Address:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.vendor?.address}
-                      </span>
-                    </span>
-                    <span>
-                      <span className="text-gray-800 text-base"></span>
-                    </span>
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    <span>
-                      Description:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.description}
                       </span>
                     </span>
                   </div>

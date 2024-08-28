@@ -17,6 +17,10 @@ export interface InputProps {
   disable?: boolean;
   desc?: string;
   children?: JSX.Element;
+  min?: number,
+  max?: number,
+  minLength?: number,
+  maxLength?: number
   // onChange: function
 }
 

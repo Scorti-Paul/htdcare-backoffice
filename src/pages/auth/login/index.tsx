@@ -71,20 +71,20 @@ export default function LoginPage() {
   return (
     <div className="h-screen bg-white">
       <div className="h-full flex justify-center items-center">
-        <div className="py-12 px-4 sm:px-4 lg:px-12 xl:px-14 shadow-md border rounded-md">
+        <div className="py-6 px-4 sm:px-4 lg:px-6 shadow-md border rounded-md w-96">
           <div className="mx-auto w-full max-w-sm">
             <div>
-              <h2 className="mt-6 text-3xl font-bold tracking-tight text-gray-900">
+              <h2 className="text-2xl font-bold tracking-tight text-darkBlue">
                 Sign in to your account
               </h2>
-              <p className="text-sm text-gray-600 mt-0.5">
+              <p className="text-sm text-darkBlue mt-0.5">
                 Enter your email and password to login.
               </p>
             </div>
             <div className="mt-6">
               <form
                 onSubmit={handleSubmission}
-                className=" flex flex-col gap-6"
+                className="flex flex-col gap-6"
               >
                 <Input
                   label="Email address"
@@ -116,34 +116,26 @@ export default function LoginPage() {
                   optionalLabel={true}
                 />
 
-                <div className="-mt-4">
+                <div className="-mt-4 flex justify-end">
                   <Link
                     to="/forgot-password"
-                    className="font-medium text-[#43ac3b] text-sm hover:text-[#50BD49]"
+                    className="font-medium text-primary-400 text-sm hover:text-primary-500"
                   >
                     Forgot your password?
                   </Link>
                 </div>
 
-                <div>
+                <div className="w-full">
                   <Button
                     onClick={handleSubmission}
                     text="Sign in"
                     hasIcon={false}
                     path=""
                     loading={isLoading}
-                    type="primary"
+                    type="primary-btn"
                   />
                 </div>
               </form>
-            </div>
-            <div className="mt-2">
-              <p className="text-gray-500">
-                Don't have an account?{" "}
-                <Link to="/register" className="text-green-700">
-                  create account
-                </Link>
-              </p>
             </div>
           </div>
         </div>

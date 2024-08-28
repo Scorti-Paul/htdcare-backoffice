@@ -1,7 +1,7 @@
 import { post, put } from "../..";
 
 export const registerUser = async (body: any) => {
-  return await post("user/create", { ...body });
+  return await post("user/sign-up", { ...body });
 };
 
 export const updateUser = async (body: any) => {

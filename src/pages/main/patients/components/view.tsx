@@ -1,220 +1,212 @@
-import defaultImg from "assets/images/defaultImage.jpg";
 import {
   ChevronRightIcon,
-  EnvelopeIcon,
-  PhoneIcon,
 } from "@heroicons/react/20/solid";
-import { UserIcon, CubeIcon } from "@heroicons/react/24/outline";
+import { UserIcon, CalendarIcon, MapPinIcon, PhoneIcon, EnvelopeIcon, BriefcaseIcon, UsersIcon, WalletIcon } from "@heroicons/react/24/outline";
 import moment from "moment";
+import { Link, useLocation } from 'react-router-dom'
+import Table from "components/Table";
+import { Column } from "components/Table/types";
+import usePagination from "hooks/usePagination";
+import { useQuery } from "react-query";
+import { MoonLoader } from "react-spinners";
+import { PlusCircleIcon } from "@heroicons/react/24/solid";
+import { Suspense, useCallback, useState } from "react";
+import TopLoader from "components/loaders/top";
+import CreateMedicalHistory from "pages/main/medicalHistory/components/create";
+import { getPatientMedicalHistories } from "api/mutations/dentist";
 
-export default function ViewPatient({ selected }: any) {
+
+export default function ViewPatient() {
+  const { state } = useLocation()
+  const [showAdd, setShowAdd] = useState(false);
+
+  const birthDate = new Date(state.birthDate)
+  const currentYear = new Date()
+  const age = currentYear.getFullYear() - birthDate.getFullYear()
+
+  const toggleShowAdd = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
+      e?.preventDefault();
+      setShowAdd(!showAdd);
+    },
+    [showAdd]
+  );
+
+  const patientDetails = [
+    { icon: UserIcon, label: 'Gender', state: state.gender },
+    { icon: CalendarIcon, label: 'Date of Birth', state: moment(state.birthDate)?.format("MMM DD, YYYY") },
+    { icon: PhoneIcon, label: 'Phone', state: state.phone },
+    { icon: MapPinIcon, label: 'Address', state: state.location.address },
+    { icon: EnvelopeIcon, label: 'Email', state: state.email },
+    { icon: WalletIcon, label: state.identification.cardType, state: state.identification.cardNumber },
+    { icon: UsersIcon, label: 'Marital Status', state: state.maritalStatus },
+    { icon: BriefcaseIcon, label: 'Occupation', state: state.occupation },
+    {
+      icon: BriefcaseIcon, label: 'Joined On', state: moment(state?.createdAt)?.format(
+        "MMM DD, YYYY"
+      )
+    },
+  ]
+
+  const { Pagination, page, limit } = usePagination(1, 10);
+
+  const { data, isFetching, refetch } = useQuery(["medicalHistoryList", page], () =>
+    getPatientMedicalHistories({
+      params: { page, limit, populate: ["dentist"], patient: state?._id },
+    })
+  );
+
+  const columns: Column[] = [
+    {
+      headerText: "Clinic",
+      keys: { type: "text", value: ["dentist.clinic.name", "dentist.clinic.phone"] },
+      type: "text",
+    },
+    {
+      headerText: "Allergies",
+      keys: { type: "text", value: ["allergies"] },
+      type: "text",
+    },
+    {
+      headerText: "Diagnosis",
+      keys: { type: "text", value: ["diagnosis"] },
+      type: "text",
+    },
+    {
+      headerText: "Procedure",
+      keys: { type: "text", value: ["procedure"] },
+      type: "text",
+    },
+    {
+      headerText: "Created On",
+      type: "date",
+      keys: { type: "date", value: ["createdAt"] },
+      format: "MMM DD, YYYY",
+    }
+  ];
+
   return (
     <>
       <div className="flex h-full">
-        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-          <div className="relative z-0 flex flex-1 overflow-hidden">
-            <main className="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last">
-              {/* Breadcrumb */}
-              <section className="pb-2 px-0">
+        <div className="flex min-w-0 flex-1 flex-col overflow-hidden px-16">
+          <section className="pb-8 px-0">
+            <div className="flex mt-4 flex-col">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-2xl font-medium leading-6 text-black">
+                    Patient Profile
+                  </h3>
+                  <p className="text-darkBlue/70 font-medium text-sm">
+                    {state?.patientCode}
+                  </p>
+                </div>
                 <nav
                   className="flex items-start space-x-3"
                   aria-label="Breadcrumb"
                 >
-                  <a
-                    href="/"
-                    className="inline-flex items-center space-x-3 text-sm font-light text-gray-900"
+                  <Link
+                    to="/"
+                    className="inline-flex items-center space-x-3 text-sm font-medium text-gray-900"
                   >
                     <span className="text-gray-600">Home</span>
-                  </a>
-                  <a
-                    href="/products"
+                  </Link>
+                  <Link
+                    to="/patients"
+                    className="inline-flex items-center font-medium space-x-3 text-sm text-gray-900"
+                  >
+                    <ChevronRightIcon
+                      className="-ml-2 h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                    <span className="text-gray-600">Patients</span>
+                  </Link>
+                  <span
                     className="inline-flex items-center space-x-3 text-sm font-light text-gray-900"
                   >
                     <ChevronRightIcon
                       className="-ml-2 h-5 w-5 text-gray-400"
                       aria-hidden="true"
                     />
-                    <span className="text-gray-600">Products</span>
-                  </a>
+                    <span className="text-gray-600">Profile</span>
+                  </span>
                 </nav>
-
-                <div className="flex mt-4 flex-col">
-                  <div className="flex justify-between items-center mr-4">
-                    <h3 className="text-2xl font-medium leading-6 text-black">
-                      {selected?.name}
-                    </h3>
-                    <div className="flex space-x-6">
-                      <a href={`mailto:${selected?.vendor?.email}`}>
-                        <button
-                          className={`inline-flex gap-1 w-full justify-center font-medium rounded-lg border text-black border-gray-100 px-4 py-2 text-base shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:col-start-2 sm:text-sm `}
-                        >
-                          <EnvelopeIcon
-                            className="-ml-2 h-5 w-5 text-black"
-                            aria-hidden="true"
-                          />
-                          <span>Message</span>
-                        </button>
-                      </a>
-                      <a className="" href={`tel:${selected?.vendor?.phone}`}>
-                        <button
-                          className={`inline-flex gap-1 w-full justify-center font-medium rounded-lg border-0 border-transparent bg-green-500 px-4 py-2 text-base text-white shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm`}
-                        >
-                          <PhoneIcon
-                            className="-ml-2 h-5 w-5 text-white"
-                            aria-hidden="true"
-                          />
-                          <span>Call</span>
-                        </button>
-                      </a>
+              </div>
+            </div>
+          </section>
+          <div className="flex gap-8">
+            <div className="border shadow-sm rounded-3xl max-w-xs">
+              <div className="text-center bg-gradient-to-br from-primary-400 to-primary-200 rounded-tl-3xl py-12 rounded-tr-3xl shadow-sm">
+              </div>
+              <div className=" text-center">
+                <img src='https://firebasestorage.googleapis.com/v0/b/backoffice-staging-c8a4a.appspot.com/o/images%2F1694076769549.jpeg?alt=media&token=3ad47252-312e-4e12-8c64-25664a389cf8' alt="" className={`rounded-full w-20 h-20 inline-block border-2 border-white -mt-12`} />
+              </div>
+              <p className="text-xl font-medium text-darkBlue mt-3 mb-1  text-center">
+                {`${state.firstName} ${state.surname} ${state?.otherName !== undefined ? state?.otherName : ''}`}
+              </p>
+              <p className="text-darkBlue/60  text-center">{age} Years old</p>
+              <div className="w-full h-0.5 bg-gray-100 my-6"></div>
+              {
+                patientDetails.map((item: any, idx: any) => {
+                  return (
+                    <div key={idx} className="flex flex-row items-center px-6 py-2">
+                      <div className="flex gap-3 w-44">
+                        <item.icon className='w-5 text-primary-400' strokeWidth={2} />
+                        <span className="text-darkBlue text-sm font-medium">{item.label}</span>
+                      </div>
+                      <span className="text-darkBlue/70 text-sm">{item.state}</span>
                     </div>
+                  )
+                })
+              }
+              <div className="px-6 py-6">
+                <div className="flex gap-3 w-44">
+                  <span className="text-darkBlue font-medium">Short Bio</span>
+                </div>
+                <span className="text-darkBlue/70 text-left text-sm">{state.description}</span>
+              </div>
+            </div>
+            <div className="relative z-0 flex flex-1 overflow-hidden">
+              <main className="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last">
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="font-medium text-darkBlue/90">Medical History</h3>
+                  <Link to='medical-history/create' onClick={toggleShowAdd}>
+                    <PlusCircleIcon className="w-10 text-secondary-600" />
+                  </Link>
+                </div>
+                {/* Breadcrumb */}
+                {isFetching ? (
+                  <div className="h-[30rem] flex justify-center items-center">
+                    <MoonLoader
+                      color="#22C55E"
+                      loading={isFetching}
+                      size={50}
+                      aria-label="loading spinner"
+                    />
                   </div>
-                  <div className="my-3">
-                    <div>
-                      <div className="flex space-x-5">
-                        <div>
-                          <label className="text-gray-400 font-light">
-                            Created on:{" "}
-                          </label>
-                          <span className="text-gray-600 font-light">
-                            {moment(selected?.createdAt)?.format(
-                              "MMM DD, YYYY"
-                            )}
-                          </span>
+                ) : (
+                  <>
+                    <div className="flex flex-col">
+                      <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                          <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                            <Table columns={columns} data={data?.data} />
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </section>
-
-              <section className="py-4 h-96">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-3">
-                    <span>
-                      <span className="text-gray-800 text-base">
-                        <img
-                          className="rounded-md p-4"
-                          src={selected?.image ? selected?.image : defaultImg}
-                          alt=""
-                        />
-                      </span>
-                    </span>
-                  </div>
-
-                  <div className="flex flex-col gap-3">
-                    <div className="flex gap-2 items-center text-gray-600">
-                      <CubeIcon className="w-6" />
-                      <span>Product Details</span>
-                    </div>
-
-                    <span>
-                      Category:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.category?.name}
-                      </span>
-                    </span>
-                    <span>
-                      Seller's Price:{" "}
-                      <span className="text-gray-800 text-base">
-                        GHS {selected?.sellersPrice?.toFixed(2)}
-                      </span>
-                    </span>
-                    <span>
-                      Cost Price:{" "}
-                      <span className="text-gray-800 text-base">
-                        GHS {selected?.costPrice?.toFixed(2)}
-                      </span>
-                    </span>
-                    <span>
-                      Quantity:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.stock}
-                      </span>
-                    </span>
-                    <span>
-                      Working Hours:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.workingHours}
-                      </span>
-                    </span>
-                    <span>
-                      Rate Unit:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.rateUnit}
-                      </span>
-                    </span>
-                    <span>
-                      Measuring Unit:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.measuringUnit}
-                      </span>
-                    </span>
-                    <span>
-                      Terms:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.terms}
-                      </span>
-                    </span>
-                    <span>
-                      Status:{" "}
-                      <span
-                        className={
-                          selected?.status === "Active"
-                            ? "text-green-600 text-base"
-                            : "text-red-500 text-base"
-                        }
-                      >
-                        {selected?.status}
-                      </span>
-                    </span>
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    <div className="flex gap-2 mt-2 items-center text-gray-600">
-                      <UserIcon className="w-6" />
-                      <span>Vendor</span>
-                    </div>
-                    <span>
-                      Name:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.vendor?.name}
-                      </span>
-                    </span>
-                    <span>
-                      Email:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.vendor?.email}
-                      </span>
-                    </span>
-                    <span>
-                      Phone:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.vendor?.phone}
-                      </span>
-                    </span>
-                    <span>
-                      Address:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.vendor?.address}
-                      </span>
-                    </span>
-                    <span>
-                      <span className="text-gray-800 text-base"></span>
-                    </span>
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    <span>
-                      Description:{" "}
-                      <span className="text-gray-800 text-base">
-                        {selected?.description}
-                      </span>
-                    </span>
-                  </div>
-                </div>
-              </section>
-            </main>
+                    <Pagination hasMore={true} total={data?.data?.length} />
+                  </>
+                )}
+              </main>
+            </div>
           </div>
         </div>
       </div>
+      <Suspense fallback={<TopLoader />}>
+        <div className="flex justify-center ml-10">
+          <CreateMedicalHistory show={showAdd} setShow={setShowAdd} refetch={refetch} patientID={state?._id} />
+        </div>
+      </Suspense>
     </>
   );
 }

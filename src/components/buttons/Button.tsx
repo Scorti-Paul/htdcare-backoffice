@@ -81,8 +81,8 @@ const Button = ({
               <Link to={`${path}`} className="inline-flex w-full justify-center rounded-xl border-2 border-primary-500 px-4 py-3 transition-all duration-200 bg-white text-primary-500 hover:bg-primary-500 hover:text-white text-sm font-medium focus:outline-none focus:ring-primary-500 focus:ring-offset-2 sm:col-start-2 sm:mt-0 sm:text-sm">
                 <div className="flex gap-2 items-center justify-center">
                   {loading && <Loader />}
-                  <span>{text}</span>
                   {hasIcon && <>{Icon}</>}
+                  <span>{text}</span>
                 </div>
               </Link>
             </div>

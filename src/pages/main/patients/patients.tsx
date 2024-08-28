@@ -3,18 +3,15 @@ import { PlusCircleIcon } from "@heroicons/react/20/solid";
 import Button from "components/buttons/Button";
 import Table from "components/Table";
 import { Column } from "components/Table/types";
-import Modal from "components/Modal";
 import Header from "components/Header";
 import usePagination from "components/hooks/usePagination";
 import { useQuery } from "react-query";
 import { get } from "api";
 import { MoonLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
-import ViewPatient from "./components/view";
 
 const Patients: FC<{}> = () => {
-  const [showView, setShowView] = useState(false);
-  const [selected, setSelected] = useState<any>({});
+  const [, setSelected] = useState<any>({});
   const navigate = useNavigate();
 
   const columns: Column[] = [
@@ -25,7 +22,7 @@ const Patients: FC<{}> = () => {
     },
     {
       headerText: "Name | Phone",
-      keys: { type: "text", value: ["fullName", "phone"] },
+      keys: { type: "text", value: ["firstName", "phone"] },
       type: "text",
     },
     {
@@ -46,14 +43,13 @@ const Patients: FC<{}> = () => {
     },
     {
       type: "action",
-      headerText: "",
+      headerText: "Actions",
       actions: [
         {
           name: "view",
           onClick: (e, dataFromTable) => {
             e?.preventDefault();
-            setShowView(true);
-            setSelected(dataFromTable);
+            navigate("patient", { state: dataFromTable })
             return null;
           },
         },
@@ -90,7 +86,7 @@ const Patients: FC<{}> = () => {
         <div className="px-4 sm:px-6 lg:px-8">
           <Header
             title="Patients"
-            description="A list of all the patients in your account including their name, title, email and role."
+            description="A list of all the patients."
           >
             <Button
               Icon={<PlusCircleIcon className="w-6" />}
@@ -128,9 +124,9 @@ const Patients: FC<{}> = () => {
       </div>
       {/* View single product */}
       <>
-        <Modal show={showView} setShow={setShowView}>
+        {/* <Modal show={showView} setShow={setShowView}>
           <ViewPatient selected={selected} />
-        </Modal>
+        </Modal> */}
       </>
     </>
   );

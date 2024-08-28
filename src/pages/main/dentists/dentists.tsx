@@ -5,7 +5,7 @@ import Table from "../../../components/Table";
 import { Column } from "../../../components/Table/types";
 import Modal from "../../../components/Modal";
 import Header from "../../../components/Header";
-import ViewProduce from "./components/view";
+import ViewDentist from "./components/view";
 import usePagination from "../../../components/hooks/usePagination";
 import { useQuery } from "react-query";
 import { get } from "../../../api";
@@ -19,19 +19,23 @@ const Dentists: FC<{}> = () => {
 
   const columns: Column[] = [
     {
-      headerText: "Produce | Type",
-      keys: { type: "text", value: ["name", "produceType"] },
+      headerText: "Name | Phone",
+      keys: { type: "text", value: ["users.name"] },
       type: "text",
     },
     {
-      headerText: "Stock | Unit",
-      keys: { type: "text", value: ["stock"] },
+      headerText: "Phone | Email",
+      keys: { type: "text", value: ["users.phone", "users.email"] },
       type: "text",
     },
-
     {
-      headerText: "Status",
-      keys: { type: "text", value: ["status"] },
+      headerText: "Clinic | Clinic Address",
+      keys: { type: "text", value: ["clinic.name", "clinic.address"] },
+      type: "text",
+    },
+    {
+      headerText: "Specialty",
+      keys: { type: "text", value: ["specialization"] },
       type: "text",
     },
     {
@@ -74,11 +78,12 @@ const Dentists: FC<{}> = () => {
 
   const { Pagination, page, limit } = usePagination(1, 10);
 
-  const { data, isFetching } = useQuery(["produceList", page], () =>
-    get("/produces", {
+  const { data, isFetching } = useQuery(["dentistList", page], () =>
+    get("/dentists", {
       params: {
         page,
         limit,
+        populate: ['users']
       },
     })
   );
@@ -87,12 +92,12 @@ const Dentists: FC<{}> = () => {
     <>
       <div className="md:mt-4 md:px-12">
         <div className="px-4 sm:px-6 lg:px-8">
-          <Header title="Produce" description="A list of all the produce.">
+          <Header title="Dentists" description="A list of all the dentists.">
             <Button
               Icon={<PlusCircleIcon className="w-4" />}
               text={"Add produce"}
-              type={"link"}
-              path={"/createproduce"}
+              type={"primary-link"}
+              path={"create-dentist"}
               onClick={() => null}
               hasIcon={true}
             />
@@ -125,7 +130,7 @@ const Dentists: FC<{}> = () => {
       {/* View single product */}
       <>
         <Modal show={showView} setShow={setShowView}>
-          <ViewProduce selected={selected} />
+          <ViewDentist selected={selected} />
         </Modal>
       </>
     </>

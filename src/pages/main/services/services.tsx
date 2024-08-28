@@ -95,9 +95,9 @@ const Services: FC<{}> = () => {
           >
             <Button
               Icon={<PlusCircleIcon className="w-4" />}
-              text={"Add service"}
-              type={"link"}
-              path={"/createservices"}
+              text={"New Service"}
+              type={"primary-link"}
+              path={"create-service"}
               onClick={() => null}
               hasIcon={true}
             />
