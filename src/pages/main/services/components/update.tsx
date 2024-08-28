@@ -4,23 +4,22 @@ import Button from "components/buttons/Button";
 import Input from "components/Input";
 import Header from "components/Header";
 import DoubleButton from "components/buttons/doubleButton";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, } from "react-query";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
-import { updatePatient } from "api/mutations/patients";
-import { get } from "api";
-import UploadImage from "components/uploadimage";
-import useUploadImage from "components/hooks/useUploadImage";
+import { updateService } from "api/mutations/services";
 
 const UpdateService: FC<{}> = ({ onclick }: any) => {
   const [serviceData, setServiceData] = useState<any>("");
-  const [image, setImage] = useState<any>(null);
-  const [tempUrl, setTempUrl] = useState<string>("");
   const { state } = useLocation();
 
   const navigate = useNavigate();
-  const { uploadImage, loading } = useUploadImage();
 
+  const statusOptions = [
+    { text: 'Select status', value: '' },
+    { text: 'Active', value: 'Active' },
+    { text: 'Inactive', value: 'Inactive' },
+  ]
   const handleChange = (e: any) => {
     setServiceData({
       ...serviceData,
@@ -28,32 +27,9 @@ const UpdateService: FC<{}> = ({ onclick }: any) => {
     });
   };
 
-  const statusOption = [
-    { value: "", text: "Select status" },
-    { value: "Active", text: "Active" },
-    { value: "Inactive", text: "Inactive" },
-  ];
-  const workingHoursOptions = [{ value: "Monday", text: "Monday" }];
-
-  const rateOptions = [
-    { value: "", text: "Select rate" },
-    { value: "Days", text: "Days" },
-    { value: "Weeks", text: "Weeks" },
-    { value: "Months", text: "Months" },
-  ];
-
-  const { data, isFetching } = useQuery(["entireVendors"], () =>
-    get("/vendors")
-  );
-
-  const { data: categoryData, isFetching: isFetchingCategory } = useQuery(
-    ["allCategories"],
-    () => get("/category")
-  );
-
   const { mutateAsync, isLoading } = useMutation({
     mutationFn: (body: any) => {
-      return updatePatient({ ...body, id: state?._id });
+      return updateService({ ...body, id: state?._id });
     },
     onError: () => {
       toast?.error("There was an error");
@@ -63,89 +39,48 @@ const UpdateService: FC<{}> = ({ onclick }: any) => {
       navigate("/services");
     },
   });
+
   const handleSubmission = useCallback(
     (e: any) => {
       //
       e?.preventDefault();
 
       if (serviceData.name === undefined) {
-        return toast?.error("Name can't be empty");
-      }
-
-      if (serviceData.workingHours === undefined) {
-        return toast?.error("Working Hours can't be empty");
-      }
-
-      if (serviceData.rateUnit === undefined) {
-        return toast?.error("Rate can't be empty");
+        return toast?.error("Service name can't be empty");
       }
 
       if (serviceData.duration === undefined) {
-        return toast?.error("Duration can't be empty");
+        return toast?.error("Duration is required");
       }
 
-      if (serviceData.costPrice === undefined) {
-        return toast?.error("Cost rate can't be empty");
+      if (serviceData.price === undefined) {
+        return toast?.error("Service rate is required");
       }
 
-      if (serviceData.sellersPrice === undefined) {
-        return toast?.error("Seller's rate can't be empty");
-      }
+      mutateAsync({
+        ...serviceData,
+      });
 
-      if (serviceData.vendor === undefined) {
-        return toast?.error("Select vendor");
-      }
-
-      if (serviceData.status === undefined) {
-        return toast?.error("Select status");
-      }
-
-      uploadImage(image)
-        ?.then((link: string) => {
-          mutateAsync({
-            ...serviceData,
-            image: link,
-            type: "service",
-          });
-          navigate("/services");
-        })
-        ?.catch((e) => {
-          toast?.warning(e?.message);
-        });
     },
-    [serviceData, mutateAsync, image, uploadImage, navigate]
+    [serviceData, mutateAsync]
   );
 
-  const createTemp = useCallback(() => {
-    if (image) {
-      const temp = URL.createObjectURL(image);
-      setTempUrl(temp);
-    }
-  }, [image]);
 
   const initialCheck = useCallback(() => {
     if (state) {
       setServiceData({
-        image: state?.image,
         name: state?.name,
-        category: state?.category,
-        vendor: state?.vendor,
-        workingHours: state?.workingHours,
-        rateUnit: state?.rateUnit,
-        duration: state?.duration,
-        sellersPrice: state?.sellersPrice,
-        costPrice: state?.costPrice,
-        status: state?.status,
-        terms: state?.terms,
+        price: state?.price,
         description: state?.description,
+        duration: state?.duration,
+        status: state?.status
       });
     }
   }, [state]);
 
   useEffect(() => {
     initialCheck();
-    createTemp();
-  }, [initialCheck, createTemp]);
+  }, [initialCheck]);
 
   return (
     <>
@@ -158,7 +93,7 @@ const UpdateService: FC<{}> = ({ onclick }: any) => {
             <Button
               Icon={<EyeIcon className="w-4" />}
               text={"Services"}
-              type={"link"}
+              type={"secondary-link"}
               path={"/services"}
               onClick={() => null}
               hasIcon={true}
@@ -168,29 +103,14 @@ const UpdateService: FC<{}> = ({ onclick }: any) => {
           <div className="">
             <div className="mt-5 md:col-span-2 md:mt-0">
               <form onSubmit={handleSubmission}>
-                <div className="overflow-hidden shadow sm:rounded-md">
-                  <div className="bg-white px-4 py-5 sm:p-6 sm:block md:flex md:justify-between md:gap-4">
-                    <div className="md:w-5/12">
-                      <UploadImage tempUrl={tempUrl} />
-                      <Input
-                        label=""
-                        name="image"
-                        inputLength="medium"
-                        onChange={(e) => {
-                          setImage(e?.target?.files[0]);
-                        }}
-                        type="file"
-                        field="upload"
-                        autoComplete="true"
-                      />
-                    </div>
-
+                <div className="overflow-hidden">
+                  <div className="sm:block md:flex md:justify-between md:gap-4 px-1">
                     <div className="w-full grid grid-cols-6 gap-6">
                       <Input
                         label="Service name"
                         name="name"
                         inputLength="medium"
-                        placeholder="eg. Ware housing"
+                        placeholder="e.g. Teeth Replacement"
                         value={serviceData["name"]}
                         onChange={handleChange}
                         type="text"
@@ -200,92 +120,24 @@ const UpdateService: FC<{}> = ({ onclick }: any) => {
                         optionalLabel={true}
                       />
 
-                      <div className={"col-span-6 sm:col-span-3"}>
-                        <label
-                          htmlFor="category"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Category
-                        </label>
-                        <select
-                          name="category"
-                          onChange={handleChange}
-                          value={serviceData["category"] || ""}
-                          className={
-                            "mt-1 block w-full rounded-md text-gray-400 border-gray-300 shadow-sm resize-none placeholder:text-gray-400 focus:border-green-500 focus:ring-green-500 sm:text-sm"
-                          }
-                        >
-                          <option>Select Category</option>
-                          {isFetchingCategory ? (
-                            <option>Loading...</option>
-                          ) : (
-                            categoryData?.data?.map((category: any) => (
-                              <option key={category?._id} value={category?._id}>
-                                {category?.name}
-                              </option>
-                            ))
-                          )}
-                        </select>
-                      </div>
-
-                      <div className={"col-span-6 sm:col-span-3"}>
-                        <label
-                          htmlFor="vendor"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Vendor
-                        </label>
-                        <select
-                          name="vendor"
-                          onChange={handleChange}
-                          value={serviceData["vendor"] || ""}
-                          className={
-                            "mt-1 block w-full rounded-md text-gray-400 border-gray-300 shadow-sm resize-none placeholder:text-gray-400 focus:border-green-500 focus:ring-green-500 sm:text-sm"
-                          }
-                        >
-                          <option>Select Vendor</option>
-                          {isFetching ? (
-                            <option>Loading...</option>
-                          ) : (
-                            data?.data?.map((ven: any) => (
-                              <option key={ven?._id}>{ven?.name}</option>
-                            ))
-                          )}
-                        </select>
-                      </div>
-
                       <Input
-                        label="Working hours"
-                        name="workingHours"
-                        inputLength="medium"
-                        placeholder="eg. Monday to Friday"
-                        value={serviceData["workingHours"] || ""}
+                        label="Service Rate"
+                        name="price"
+                        type="number"
+                        value={serviceData["price"] || ""}
                         onChange={handleChange}
-                        type="text"
+                        required
+                        inputLength="medium"
                         field="input"
-                        autoComplete="true"
-                        selectOptions={workingHoursOptions}
+                        placeholder="GHC"
                         hasShowPassword="disable"
                         optionalLabel={true}
                       />
 
                       <Input
-                        label="Rate"
-                        name="rateUnit"
-                        inputLength="medium"
-                        placeholder=""
-                        type="text"
-                        value={serviceData["rateUnit"] || ""}
-                        onChange={handleChange}
-                        field="select"
-                        autoComplete="true"
-                        selectOptions={rateOptions}
-                      />
-
-                      <Input
-                        type="number"
+                        label="How long does the procedure take (in mins)"
                         name="duration"
-                        label="Duration"
+                        type="number"
                         value={serviceData["duration"] || ""}
                         onChange={handleChange}
                         inputLength="medium"
@@ -297,58 +149,16 @@ const UpdateService: FC<{}> = ({ onclick }: any) => {
                       />
 
                       <Input
-                        type="number"
-                        name="sellersPrice"
-                        label="Seller's rate"
-                        value={serviceData["sellersPrice"] || ""}
-                        onChange={handleChange}
-                        required
-                        inputLength="small"
-                        field="input"
-                        placeholder="GHC"
-                        hasShowPassword="disable"
-                        optionalLabel={true}
-                      />
-
-                      <Input
-                        type="number"
-                        name="costPrice"
-                        label="Cost rate"
-                        value={serviceData["costPrice"] || ""}
-                        onChange={handleChange}
-                        required
-                        inputLength="small"
-                        field="input"
-                        placeholder="GHC"
-                        hasShowPassword="disable"
-                        optionalLabel={true}
-                      />
-
-                      <Input
                         label="Status"
                         name="status"
-                        onChange={handleChange}
                         value={serviceData["status"] || ""}
-                        inputLength="small"
-                        placeholder=""
-                        hasShowPassword="disable"
-                        type="text"
-                        field="select"
-                        autoComplete="true"
-                        optionalLabel={true}
-                        selectOptions={statusOption}
-                      />
-
-                      <Input
-                        label="Terms"
-                        name="terms"
-                        inputLength="large"
-                        placeholder=""
-                        value={serviceData["terms"] || ""}
                         onChange={handleChange}
-                        type="text"
-                        field="input"
-                        autoComplete="true"
+                        inputLength="medium"
+                        field="select"
+                        type="select"
+                        required
+                        placeholder="0"
+                        selectOptions={statusOptions}
                         hasShowPassword="disable"
                         optionalLabel={true}
                       />
@@ -368,7 +178,7 @@ const UpdateService: FC<{}> = ({ onclick }: any) => {
                   </div>
                   <DoubleButton
                     buttonText="Update service"
-                    loading={isLoading || loading}
+                    loading={isLoading}
                     onClick={handleSubmission}
                   />
                 </div>
