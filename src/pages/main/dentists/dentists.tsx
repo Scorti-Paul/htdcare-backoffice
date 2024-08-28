@@ -5,7 +5,7 @@ import Table from "../../../components/Table";
 import { Column } from "../../../components/Table/types";
 import Modal from "../../../components/Modal";
 import Header from "../../../components/Header";
-import ViewProduce from "./components/view";
+import ViewDentist from "./components/view";
 import usePagination from "../../../components/hooks/usePagination";
 import { useQuery } from "react-query";
 import { get } from "../../../api";
@@ -20,12 +20,12 @@ const Dentists: FC<{}> = () => {
   const columns: Column[] = [
     {
       headerText: "Name | Phone",
-      keys: { type: "text", value: ["userID.name"] },
+      keys: { type: "text", value: ["users.name"] },
       type: "text",
     },
     {
       headerText: "Phone | Email",
-      keys: { type: "text", value: ["userID.phone", "userID.email"] },
+      keys: { type: "text", value: ["users.phone", "users.email"] },
       type: "text",
     },
     {
@@ -83,7 +83,7 @@ const Dentists: FC<{}> = () => {
       params: {
         page,
         limit,
-        populate: ['userID']
+        populate: ['users']
       },
     })
   );
@@ -130,7 +130,7 @@ const Dentists: FC<{}> = () => {
       {/* View single product */}
       <>
         <Modal show={showView} setShow={setShowView}>
-          <ViewProduce selected={selected} />
+          <ViewDentist selected={selected} />
         </Modal>
       </>
     </>
