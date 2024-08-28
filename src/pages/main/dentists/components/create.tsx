@@ -11,7 +11,6 @@ import { toast } from "react-toastify";
 import useUploadImage from "components/hooks/useUploadImage";
 import UploadImage from "components/uploadimage";
 import { createDentist } from "api/mutations/dentist";
-import { registerUser } from "api/mutations/users";
 
 const CreateDentist: FC<{}> = () => {
   const [dentistData, setDentistData] = useState<any>("");
@@ -44,19 +43,6 @@ const CreateDentist: FC<{}> = () => {
     },
   });
 
-  const { mutateAsync: userMutateAsync, isLoading: isUserLoading } = useMutation({
-    mutationFn: (body: any) => {
-      return registerUser(body);
-    },
-    onError: (e) => {
-      toast?.error("There was an error");
-    },
-    onSuccess: () => {
-      toast?.success("Dentist created successfully");
-      navigate("/dentists");
-    },
-  });
-
   const handleSubmission = (e: any) => {
     //
     e?.preventDefault();
@@ -65,23 +51,57 @@ const CreateDentist: FC<{}> = () => {
       return toast?.error("Name can't be empty");
     }
 
-    // if (dentistData.type === undefined) {
-    //   return toast?.error("Select dentist type");
-    // }
+    if (dentistData.email === undefined) {
+      return toast?.error('Email is required')
+    }
 
-    // if (dentistData.stock === undefined) {
-    //   return toast?.error("Quantity can't be empty");
-    // }
+    if (
+      dentistData.email.split('').filter((x: any) => x === '@').length !==
+      -1 &&
+      dentistData.email.indexOf('.') === -1
+    ) {
+      return toast?.error('Email is invalid')
+    }
 
-    console.log(dentistData)
+    if (dentistData.specialization === undefined) {
+      return toast?.error("Name can't be empty");
+    }
 
+    if (dentistData.yearsOfExperience === undefined) {
+      return toast?.error("Specify your years Of experience");
+    }
 
+    if (dentistData.licenseNumber === undefined) {
+      return toast?.error("License number can't be empty");
+    }
 
-    // add status
+    if (dentistData.phone === undefined) {
+      return toast?.error("Phone number is required");
+    }
+
+    if (dentistData.clinicName === undefined) {
+      return toast?.error("Clinic name is required");
+    }
+
+    if (dentistData.clinicPhone === undefined) {
+      return toast?.error("Clinic phone is required");
+    }
+
+    if (dentistData.clinicAddress === undefined) {
+      return toast?.error("Clinic address is required");
+    }
+
+    if (dentistData.clinicEmail === undefined) {
+      return toast?.error("Clinic email is required");
+    }
+
     uploadImage(image)
       ?.then((link: string) => {
         mutateAsync({
           ...dentistData,
+          profilePicture: link,
+          role: "dentist",
+          password: "0000000",
           clinic: {
             name: dentistData.clinicName,
             phone: dentistData.clinicPhone,
@@ -89,31 +109,17 @@ const CreateDentist: FC<{}> = () => {
             email: dentistData.clinicEmail,
           },
           status: "Active",
-        });
-        // navigate("/dentist");
-        userMutateAsync({
-          name: dentistData.name,
-          email: dentistData.email,
-          phone: dentistData.phone,
-          profilePicture: link,
-          role: "dentist",
-          password: "0000000"
         })
+          ?.then(() => {
+            setDentistData("");
+            setImage(null);
+            setTempUrl("");
+          })
+          ?.catch((e) => {
+            toast?.warning(e?.message);
+          })
       })
-      ?.then(() => {
-        setDentistData("");
-        setImage(null);
-        setTempUrl("");
-      })
-      ?.catch((e) => {
-        toast?.warning(e?.message);
-      });
   };
-
-  // const { data: categoryData, isFetching: isFetchingCategory } = useQuery(
-  //   ["categoriesSearch"],
-  //   () => get("/categories")
-  // );
 
   const createTemp = useCallback(() => {
     if (image) {
@@ -152,17 +158,19 @@ const CreateDentist: FC<{}> = () => {
                   <div className="bg-white px-4 py-5 sm:p-6 sm:block">
                     <div className="md:w-5/12">
                       <UploadImage tempUrl={tempUrl} />
-                      <Input
-                        label=""
-                        name="image"
-                        inputLength="medium"
-                        onChange={(e) => {
-                          setImage(e?.target?.files[0]);
-                        }}
-                        type="file"
-                        field="upload"
-                        optionalLabel={true}
-                      />
+                      <div className="-mt-[5.6rem]">
+                        <Input
+                          label=""
+                          name="image"
+                          inputLength="medium"
+                          onChange={(e) => {
+                            setImage(e?.target?.files[0]);
+                          }}
+                          type="file"
+                          field="upload"
+                          optionalLabel={true}
+                        />
+                      </div>
                     </div>
 
                     <div className="w-full grid grid-cols-6 gap-6">
@@ -226,10 +234,10 @@ const CreateDentist: FC<{}> = () => {
 
                       <Input
                         label="Phone"
-                        name="Phone"
+                        name="phone"
                         inputLength="medium"
                         placeholder="eg. Enter dentist phone number"
-                        value={dentistData["Phone"] || ""}
+                        value={dentistData["phone"] || ""}
                         onChange={handleChange}
                         optionalLabel={true}
                         hasShowPassword="disable"
