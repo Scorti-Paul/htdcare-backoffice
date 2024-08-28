@@ -133,7 +133,7 @@ const CreatePatient: FC = () => {
             <Button
               Icon={<EyeIcon className="w-6" />}
               text={"Patients"}
-              type={"primary-link"}
+              type={"secondary-link"}
               path={"/patients"}
               onClick={() => null}
               hasIcon={true}
@@ -145,10 +145,9 @@ const CreatePatient: FC = () => {
               <form onSubmit={handleSubmission}>
                 <div className="overflow-hidden">
                   <div className="bg-white py-5 px-1 sm:block">
-                    <div className="flex items-center">
-                      <div className="mb-6">
+                    <div className="md:w-5/12">
                         <UploadImage tempUrl={tempUrl} />
-                      </div>
+                      <div className="-mt-[5.6rem]">
                       <Input
                         label=""
                         name="image"
@@ -160,6 +159,7 @@ const CreatePatient: FC = () => {
                         field="upload"
                         optionalLabel={true}
                       />
+                      </div>
                     </div>
 
                     <div className="w-full grid grid-cols-6 gap-6">
