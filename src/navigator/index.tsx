@@ -9,10 +9,6 @@ import Dashboard from "pages/main/dashboard";
 import Services from "pages/main/services";
 import CreateServices from "pages/main/services/components/create";
 import UpdateService from "pages/main/services/components/update";
-import Farmers from "pages/main/farmers";
-import CreateFarmers from "pages/main/farmers/components/createfarmer";
-import UpdateFarmer from "pages/main/farmers/components/updatefarmer";
-import ViewSingleFarmer from "pages/main/farmers/components/viewfarmer";
 import Orders from "pages/main/orders";
 import UpdateOrder from "pages/main/orders/components/updateorder";
 import UserProfile from "pages/main/users/components/userprofile";
@@ -56,7 +52,7 @@ const router = createBrowserRouter([
         element: <Appointments />
       },
       {
-        path: "/appointments/create-appointment",
+        path: "/appointments/schedule-appointment",
         element: <CreateAppointment />
       },
       {
@@ -84,28 +80,12 @@ const router = createBrowserRouter([
         element: <Services />,
       },
       {
-        path: "createservices",
+        path: "/services/create-service",
         element: <CreateServices />,
       },
       {
         path: "/services/update-service",
         element: <UpdateService />,
-      },
-      {
-        path: "farmers",
-        element: <Farmers />,
-      },
-      {
-        path: "createfarmers",
-        element: <CreateFarmers />,
-      },
-      {
-        path: "/farmers/update-farmer",
-        element: <UpdateFarmer />,
-      },
-      {
-        path: "/farmers/farmer",
-        element: <ViewSingleFarmer />,
       },
       {
         path: "dentists",
