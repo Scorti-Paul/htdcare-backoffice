@@ -21,7 +21,7 @@ const Appointments: FC<{}> = () => {
   const columns: Column[] = [
     {
       headerText: "Patient",
-      keys: { type: "text", value: ["patient.firstName", "patient.email"] },
+      keys: { type: "text", value: ["patient.user.fullName", "patient.email"] },
       type: "text",
     }, 
     {
