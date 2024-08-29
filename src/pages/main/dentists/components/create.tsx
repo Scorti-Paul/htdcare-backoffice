@@ -175,11 +175,25 @@ const CreateDentist: FC<{}> = () => {
 
                     <div className="w-full grid grid-cols-6 gap-6">
                       <Input
-                        label="Name"
-                        name="name"
+                        label="First Name"
+                        name="firstName"
                         inputLength="small"
                         placeholder="eg. Amartey James"
-                        value={dentistData["name"] || ""}
+                        value={dentistData["firstName"] || ""}
+                        onChange={handleChange}
+                        optionalLabel={true}
+                        hasShowPassword="disable"
+                        type="text"
+                        field="input"
+                        autoComplete="true"
+                      />
+
+                      <Input
+                        label="Surname"
+                        name="surname"
+                        inputLength="small"
+                        placeholder="eg. Amartey James"
+                        value={dentistData["surname"] || ""}
                         onChange={handleChange}
                         optionalLabel={true}
                         hasShowPassword="disable"
