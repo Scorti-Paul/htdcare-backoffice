@@ -47,7 +47,7 @@ const Appointments: FC<{}> = () => {
     },
     {
       type: "action",
-      headerText: "",
+      headerText: "Actions",
 
       actions: [
         {
