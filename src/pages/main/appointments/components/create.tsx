@@ -8,11 +8,11 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { useMutation } from 'react-query'
-import { createVendor } from '../../../../api/mutations/vendors'
+import { scheduleAppointment } from '../../../../api/mutations/appointment'
 import { toast } from 'react-toastify'
 
 const CreateAppointment: FC<{}> = () => {
-  const [vendorData, setVendorData] = useState<any>('')
+  const [appointmentData, setAppointmentData] = useState<any>('')
   const [showPassword, setShowPassword] = useState(true)
 
   const handleShowHidePassword = () => {
@@ -22,21 +22,21 @@ const CreateAppointment: FC<{}> = () => {
   const navigate = useNavigate()
 
   const handleChange = (e: any) => {
-    setVendorData({
-      ...vendorData,
+    setAppointmentData({
+      ...appointmentData,
       [e.target.name]: e.target.value,
     })
   }
 
   const { mutateAsync, isLoading } = useMutation({
     mutationFn: (body: any) => {
-      return createVendor(body)
+      return scheduleAppointment(body)
     },
     onError: (e) => {
       toast?.error('There was an error registering')
     },
     onSuccess: () => {
-      toast?.success('Vendor created successfully')
+      toast?.success('Appointment created successfully')
     },
   })
 
@@ -45,61 +45,61 @@ const CreateAppointment: FC<{}> = () => {
       //
       e?.preventDefault()
 
-      if (vendorData.name === undefined) {
+      if (appointmentData.name === undefined) {
         return toast?.error("Company name can't be empty")
       }
 
-      if (vendorData.type === undefined) {
-        return toast?.error('Select vendor type')
+      if (appointmentData.type === undefined) {
+        return toast?.error('Select appointment type')
       }
 
-      if (vendorData.email === undefined) {
+      if (appointmentData.email === undefined) {
         return toast?.error("Email can't be empty")
       }
 
-      if (vendorData.phone === undefined) {
+      if (appointmentData.phone === undefined) {
         return toast?.error("Phone number can't be empty")
       }
 
-      if (vendorData.address === undefined) {
+      if (appointmentData.address === undefined) {
         return toast?.error("Address can't be empty")
       }
 
-      if (vendorData.location === undefined) {
+      if (appointmentData.location === undefined) {
         return toast?.error("Location can't be empty")
       }
 
-      if (vendorData.digitalAddress === undefined) {
+      if (appointmentData.digitalAddress === undefined) {
         return toast?.error("Digital address can't be empty")
       }
 
-      if (vendorData.password === undefined) {
+      if (appointmentData.password === undefined) {
         return toast?.error("Password can't be empty")
       }
 
-      if (vendorData.confirmPassword === undefined) {
+      if (appointmentData.confirmPassword === undefined) {
         return toast?.error("Confirm password can't be empty")
       }
 
       if (
-        vendorData.email.split('').filter((x: any) => x === '@').length !==
+        appointmentData.email.split('').filter((x: any) => x === '@').length !==
           -1 &&
-        vendorData.email.indexOf('.') === -1
+        appointmentData.email.indexOf('.') === -1
       ) {
         return toast?.error('Email is invalid')
       }
 
-      if (vendorData.password !== vendorData.confirmPassword) {
+      if (appointmentData.password !== appointmentData.confirmPassword) {
         return toast?.error('password and confirm password are not the same')
       }
 
       mutateAsync({
-        ...vendorData,
+        ...appointmentData,
       })
 
-      navigate('/vendors')
+      navigate('/appointments')
     },
-    [vendorData, mutateAsync, navigate],
+    [appointmentData, mutateAsync, navigate],
   )
 
   const venderTypeOptions = [
@@ -112,14 +112,14 @@ const CreateAppointment: FC<{}> = () => {
       <div className="md:mt-4 md:px-12">
         <div className="px-4 sm:px-6 lg:px-8">
           <Header
-            title="Create Vendors"
-            description="Fill out the details to sign up a new vendor."
+            title="Create Appointments"
+            description="Fill out the details to sign up a new appointment."
           >
             <Button
               Icon={<EyeIcon className="w-4" />}
-              text={'Vendors'}
+              text={'Appointments'}
               type={'link'}
-              path={'/vendors'}
+              path={'/appointments'}
               onClick={() => null}
               hasIcon={true}
             />
@@ -136,7 +136,7 @@ const CreateAppointment: FC<{}> = () => {
                         name="name"
                         inputLength="small"
                         placeholder="eg. Farmercom LTD"
-                        value={vendorData['name'] || ''}
+                        value={appointmentData['name'] || ''}
                         onChange={handleChange}
                         type="text"
                         field="input"
@@ -145,11 +145,11 @@ const CreateAppointment: FC<{}> = () => {
                         autoComplete="true"
                       />
                       <Input
-                        label="Vendor Type"
+                        label="Appointment Type"
                         name="type"
                         inputLength="small"
                         placeholder=""
-                        value={vendorData['type'] || ''}
+                        value={appointmentData['type'] || ''}
                         onChange={handleChange}
                         hasShowPassword="disable"
                         selectOptions={venderTypeOptions}
@@ -164,7 +164,7 @@ const CreateAppointment: FC<{}> = () => {
                         name="email"
                         inputLength="small"
                         placeholder="you@example.com"
-                        value={vendorData['email'] || ''}
+                        value={appointmentData['email'] || ''}
                         onChange={handleChange}
                         hasShowPassword="disable"
                         type="email"
@@ -177,7 +177,7 @@ const CreateAppointment: FC<{}> = () => {
                         name="phone"
                         inputLength="medium"
                         placeholder="(+233) xx xxx xxxx"
-                        value={vendorData['phone'] || ''}
+                        value={appointmentData['phone'] || ''}
                         onChange={handleChange}
                         type="tel"
                         hasShowPassword="disable"
@@ -191,7 +191,7 @@ const CreateAppointment: FC<{}> = () => {
                         name="alternativePhoneNumber"
                         inputLength="medium"
                         placeholder="(+233) xx xxx xxxx"
-                        value={vendorData['alternativePhoneNumber'] || ''}
+                        value={appointmentData['alternativePhoneNumber'] || ''}
                         onChange={handleChange}
                         type="tel"
                         hasShowPassword="disable"
@@ -204,7 +204,7 @@ const CreateAppointment: FC<{}> = () => {
                         name="address"
                         inputLength="medium"
                         placeholder=""
-                        value={vendorData['address'] || ''}
+                        value={appointmentData['address'] || ''}
                         onChange={handleChange}
                         hasShowPassword="disable"
                         type="text"
@@ -218,7 +218,7 @@ const CreateAppointment: FC<{}> = () => {
                         name="location"
                         inputLength="medium"
                         placeholder=""
-                        value={vendorData['location'] || ''}
+                        value={appointmentData['location'] || ''}
                         onChange={handleChange}
                         type="text"
                         hasShowPassword="disable"
@@ -232,7 +232,7 @@ const CreateAppointment: FC<{}> = () => {
                         name="dateOfReg"
                         inputLength="medium"
                         placeholder=""
-                        value={vendorData['dateOfReg'] || ''}
+                        value={appointmentData['dateOfReg'] || ''}
                         onChange={handleChange}
                         type="date"
                         hasShowPassword="disable"
@@ -245,7 +245,7 @@ const CreateAppointment: FC<{}> = () => {
                         name="digitalAddress"
                         inputLength="medium"
                         placeholder="GA-543-0125"
-                        value={vendorData['digitalAddress'] || ''}
+                        value={appointmentData['digitalAddress'] || ''}
                         onChange={handleChange}
                         type="text"
                         field="input"
@@ -258,7 +258,7 @@ const CreateAppointment: FC<{}> = () => {
                         label="Number of outlets"
                         name="numberOfOutlets"
                         inputLength="small"
-                        value={vendorData['numberOfOutlets'] || ''}
+                        value={appointmentData['numberOfOutlets'] || ''}
                         onChange={handleChange}
                         placeholder=""
                         type="number"
@@ -272,7 +272,7 @@ const CreateAppointment: FC<{}> = () => {
                         inputLength="large"
                         placeholder="Akim Oda/ Kusi, ..."
                         onChange={handleChange}
-                        value={vendorData['outlets']}
+                        value={appointmentData['outlets']}
                         type="text"
                         field="textarea"
                         autoComplete="true"
@@ -284,7 +284,7 @@ const CreateAppointment: FC<{}> = () => {
                         name="password"
                         inputLength="medium"
                         placeholder="*************"
-                        value={vendorData['password'] || ''}
+                        value={appointmentData['password'] || ''}
                         onChange={handleChange}
                         type="text"
                         field="input"
@@ -299,7 +299,7 @@ const CreateAppointment: FC<{}> = () => {
                         name="confirmPassword"
                         inputLength="medium"
                         placeholder="*************"
-                        value={vendorData['confirmPassword'] || ''}
+                        value={appointmentData['confirmPassword'] || ''}
                         onChange={handleChange}
                         type="text"
                         field="input"
@@ -313,7 +313,7 @@ const CreateAppointment: FC<{}> = () => {
 
                   <DoubleButton
                     loading={isLoading}
-                    buttonText="Save vendor"
+                    buttonText="Save appointment"
                     onClick={handleSubmission}
                   />
                 </div>
