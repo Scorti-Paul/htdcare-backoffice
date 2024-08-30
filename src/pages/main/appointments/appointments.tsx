@@ -78,10 +78,10 @@ const Appointments: FC<{}> = () => {
     },
   ];
 
-  const { Pagination, page, limit } = usePagination(1, 10);
+  const { Pagination } = usePagination(1, 10);
 
-  const { data, isFetching } = useQuery(["appointmentsList", page], () =>
-    get("/appointments", { params: { page, limit, populate: ["service", "patient", "dentist"] } })
+  const { data, isFetching } = useQuery(["appointmentsList"], () =>
+    get("/appointments")
   );
 
   return (
