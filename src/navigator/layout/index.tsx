@@ -264,7 +264,7 @@ export default function Layout() {
             <div className="flex justify-between items-center flex-shrink-0 ml-[19.4rem] mr-12">
               <Link to="users/user/profile" className="hover:cursor-pointer">
                 <div className="group block w-full flex-shrink-0">
-                  Hey! Welcome {user?.name.split(' ')[0]}
+                  Hey! Welcome {user?.firstName}
                 </div>
               </Link>
               <div>
