@@ -19,13 +19,13 @@ const Dentists: FC<{}> = () => {
 
   const columns: Column[] = [
     {
-      headerText: "Name | Phone",
-      keys: { type: "text", value: ["users.name"] },
+      headerText: "Name",
+      keys: { type: "text", value: ["user.fullName"] },
       type: "text",
     },
     {
       headerText: "Phone | Email",
-      keys: { type: "text", value: ["users.phone", "users.email"] },
+      keys: { type: "text", value: ["user.phone", "user.email"] },
       type: "text",
     },
     {
@@ -83,7 +83,7 @@ const Dentists: FC<{}> = () => {
       params: {
         page,
         limit,
-        populate: ['users']
+        populate: ['user']
       },
     })
   );
