@@ -22,7 +22,7 @@ const Patients: FC<{}> = () => {
     },
     {
       headerText: "Name | Phone",
-      keys: { type: "text", value: ["user.fullName", "phone"] },
+      keys: { type: "text", value: ["user.fullName", "user.phone"] },
       type: "text",
     },
     {
