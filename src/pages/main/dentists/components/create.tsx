@@ -156,7 +156,7 @@ const CreateDentist: FC<{}> = () => {
               <form onSubmit={handleSubmission}>
                 <div className="overflow-hidden">
                   <div className="bg-white px-4 py-5 sm:p-6 sm:block">
-                    <div className="md:w-5/12">
+                    <div className="md:w-5/12 mb-6">
                       <UploadImage tempUrl={tempUrl} />
                       <div className="-mt-[5.6rem]">
                         <Input
