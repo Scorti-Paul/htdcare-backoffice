@@ -46,6 +46,11 @@ const navigation = [
     count: 12,
   },
   {
+    name: "Products",
+    icon: WrenchScrewdriverIcon,
+    href: "/products",
+  },
+  {
     name: "Services",
     icon: WrenchScrewdriverIcon,
     href: "/services",
