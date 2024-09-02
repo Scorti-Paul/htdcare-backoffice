@@ -91,7 +91,7 @@ const Services: FC<{}> = () => {
         <div className="px-4 sm:px-6 lg:px-8">
           <Header
             title="Services"
-            description="A list of all the services in your account including their name, title, email and role."
+            description="A list of all the services."
           >
             <Button
               Icon={<PlusCircleIcon className="w-4" />}
