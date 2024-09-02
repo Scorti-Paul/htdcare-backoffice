@@ -21,7 +21,7 @@ const Appointments: FC<{}> = () => {
   const columns: Column[] = [
     {
       headerText: "Patient",
-      keys: { type: "text", value: ["patient.user.fullName", "patient.email"] },
+      keys: { type: "text", value: ["patient.user.fullName", "patient.user.email"] },
       type: "text",
     }, 
     {
@@ -31,7 +31,12 @@ const Appointments: FC<{}> = () => {
     },
     {
       headerText: "Service",
-      keys: { type: "text", value: ["service.name", "service.price"] },
+      keys: { type: "text", value: ["service.name"] },
+      type: "text",
+    },
+    {
+      headerText: "Price",
+      keys: { type: "currency", value: ["service.price"] },
       type: "text",
     },
     {
