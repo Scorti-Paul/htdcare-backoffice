@@ -27,7 +27,7 @@ const Patients: FC<{}> = () => {
     },
     {
       headerText: "Email | Address",
-      keys: { type: "text", value: ["email", "location.address"] },
+      keys: { type: "text", value: ["user.email", "location.address"] },
       type: "text",
     },
     {
