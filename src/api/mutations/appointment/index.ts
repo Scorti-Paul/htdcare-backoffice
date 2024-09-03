@@ -4,8 +4,8 @@ export const scheduleAppointment = async (body: any) => {
   return await post("appointment/create", { ...body });
 };
 
-export const updateDentist = async (body: any) => {
-  return await put("dentist/update", { ...body });
+export const updateAppointment = async (body: any) => {
+  return await put("appointment/update", { ...body });
 };
 
 export const getPatientMedicalHistories = async (config = {}) => {
