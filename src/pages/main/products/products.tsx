@@ -30,8 +30,13 @@ const Products: FC<{}> = () => {
       type: "text",
     },
     {
-      headerText: "Quantity | Threshold",
-      keys: { type: "text", value: ["quantity", "threshold"] },
+      headerText: "Quantity",
+      keys: { type: "text", value: ["quantity"] },
+      type: "text",
+    },
+    {
+      headerText: "Threshold",
+      keys: { type: "text", value: ["threshold"] },
       type: "text",
     },
     {
