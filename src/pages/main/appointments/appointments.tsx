@@ -25,8 +25,8 @@ const Appointments: FC<{}> = () => {
       type: "text",
     }, 
     {
-      headerText: "Dentist",
-      keys: { type: "text", value: ["dentist.specialization", "dentist.licenseNumber"] },
+      headerText: "Dentist | Specialty",
+      keys: { type: "text", value: ["dentist.user.fullName", "dentist.specialization"] },
       type: "text",
     },
     {
