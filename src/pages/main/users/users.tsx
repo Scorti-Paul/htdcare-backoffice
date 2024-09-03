@@ -17,7 +17,7 @@ const Users: FC<{}> = () => {
   const columns: Column[] = [
     {
       headerText: "Name",
-      keys: { type: "text", value: ["name"] },
+      keys: { type: "text", value: ["fullName"] },
       type: "text",
     },
     {
