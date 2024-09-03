@@ -22,12 +22,12 @@ const Patients: FC<{}> = () => {
     },
     {
       headerText: "Name | Phone",
-      keys: { type: "text", value: ["firstName", "phone"] },
+      keys: { type: "text", value: ["user.fullName", "user.phone"] },
       type: "text",
     },
     {
       headerText: "Email | Address",
-      keys: { type: "text", value: ["email", "location.address"] },
+      keys: { type: "text", value: ["user.email", "location.address"] },
       type: "text",
     },
     {
@@ -76,7 +76,7 @@ const Patients: FC<{}> = () => {
 
   const { data, isFetching } = useQuery(["patientsList", page], () =>
     get("/patients", {
-      params: { page, limit },
+      params: { page, limit, populate: ["user"] },
     })
   );
 

@@ -21,17 +21,22 @@ const Appointments: FC<{}> = () => {
   const columns: Column[] = [
     {
       headerText: "Patient",
-      keys: { type: "text", value: ["patient.firstName", "patient.email"] },
+      keys: { type: "text", value: ["patient.user.fullName", "patient.user.email"] },
       type: "text",
     }, 
     {
-      headerText: "Dentist",
-      keys: { type: "text", value: ["dentist.specialization", "dentist.licenseNumber"] },
+      headerText: "Dentist | Specialty",
+      keys: { type: "text", value: ["dentist.user.fullName", "dentist.specialization"] },
       type: "text",
     },
     {
       headerText: "Service",
-      keys: { type: "text", value: ["service.name", "service.price"] },
+      keys: { type: "text", value: ["service.name"] },
+      type: "text",
+    },
+    {
+      headerText: "Price",
+      keys: { type: "currency", value: ["service.price"] },
       type: "text",
     },
     {
@@ -47,7 +52,7 @@ const Appointments: FC<{}> = () => {
     },
     {
       type: "action",
-      headerText: "",
+      headerText: "Actions",
 
       actions: [
         {
@@ -78,10 +83,10 @@ const Appointments: FC<{}> = () => {
     },
   ];
 
-  const { Pagination, page, limit } = usePagination(1, 10);
+  const { Pagination } = usePagination(1, 10);
 
-  const { data, isFetching } = useQuery(["appointmentsList", page], () =>
-    get("/appointments", { params: { page, limit, populate: ["service", "patient", "dentist"] } })
+  const { data, isFetching } = useQuery(["appointmentsList"], () =>
+    get("/appointments")
   );
 
   return (

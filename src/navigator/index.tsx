@@ -16,13 +16,7 @@ import UpdateUser from "pages/main/users/components/updateuser";
 import CreateUser from "pages/main/users/components/createuser";
 import Users from "pages/main/users";
 import Settings from "pages/main/settings";
-import Category from "pages/main/category/category";
-import Production from "pages/main/production";
-import UpdateProduction from "pages/main/production/components/updateproduction";
-import CreateProduction from "pages/main/production/components/createproduction";
-import ServiceRequests from "pages/main/servicerequests/servicerequests";
-import CreateServiceRequests from "pages/main/servicerequests/components/createservicerequests";
-import UpdateServiceRequests from "pages/main/servicerequests/components/updateservicerequests";
+import Category from "pages/main/category/category"; 
 import Patients from "pages/main/patients";
 import CreatePatient from "pages/main/patients/components/create";
 import UpdatePatient from "pages/main/patients/components/update";
@@ -33,6 +27,9 @@ import Appointments from "pages/main/appointments";
 import UpdateAppointment from "pages/main/appointments/components/update";
 import CreateAppointment from "pages/main/appointments/components/create";
 import ViewPatient from "pages/main/patients/components/view";
+import Products from "pages/main/products";
+import CreateProduct from "pages/main/products/components/create";
+import UpdateProduct from "pages/main/products/components/update";
 
 const router = createBrowserRouter([
   {
@@ -104,28 +101,16 @@ const router = createBrowserRouter([
         element: <Orders />,
       },
       {
-        path: "/service-requests",
-        element: <ServiceRequests />,
+        path: "products",
+        element: <Products />,
       },
       {
-        path: "create-servicerequests",
-        element: <CreateServiceRequests />,
+        path: "products/create-product",
+        element: <CreateProduct />,
       },
       {
-        path: "service-requests/update",
-        element: <UpdateServiceRequests />,
-      },
-      {
-        path: "production",
-        element: <Production />,
-      },
-      {
-        path: "create-production",
-        element: <CreateProduction />,
-      },
-      {
-        path: "production/update-production",
-        element: <UpdateProduction />,
+        path: "products/update-product",
+        element: <UpdateProduct />,
       },
       {
         path: "/orders/update-order",
@@ -136,7 +121,7 @@ const router = createBrowserRouter([
         element: <Users />,
       },
       {
-        path: "createuser",
+        path: "users/create-user",
         element: <CreateUser />,
       },
       {

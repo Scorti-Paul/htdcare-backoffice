@@ -156,7 +156,7 @@ const CreateDentist: FC<{}> = () => {
               <form onSubmit={handleSubmission}>
                 <div className="overflow-hidden">
                   <div className="bg-white px-4 py-5 sm:p-6 sm:block">
-                    <div className="md:w-5/12">
+                    <div className="md:w-5/12 mb-6">
                       <UploadImage tempUrl={tempUrl} />
                       <div className="-mt-[5.6rem]">
                         <Input
@@ -175,11 +175,25 @@ const CreateDentist: FC<{}> = () => {
 
                     <div className="w-full grid grid-cols-6 gap-6">
                       <Input
-                        label="Name"
-                        name="name"
+                        label="First Name"
+                        name="firstName"
                         inputLength="small"
                         placeholder="eg. Amartey James"
-                        value={dentistData["name"] || ""}
+                        value={dentistData["firstName"] || ""}
+                        onChange={handleChange}
+                        optionalLabel={true}
+                        hasShowPassword="disable"
+                        type="text"
+                        field="input"
+                        autoComplete="true"
+                      />
+
+                      <Input
+                        label="Surname"
+                        name="surname"
+                        inputLength="small"
+                        placeholder="eg. Amartey James"
+                        value={dentistData["surname"] || ""}
                         onChange={handleChange}
                         optionalLabel={true}
                         hasShowPassword="disable"

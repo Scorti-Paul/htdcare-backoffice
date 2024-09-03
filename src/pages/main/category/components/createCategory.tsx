@@ -28,7 +28,6 @@ export default function CreateCategory({
     setLoading(true);
     createCategory({ ...data })
       ?.then((response) => {
-        console.log(response);
         setLoading(false);
         setShow(false);
         refetch();

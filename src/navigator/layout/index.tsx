@@ -11,7 +11,7 @@ import {
   WrenchScrewdriverIcon,
   ChevronUpIcon,
   GiftIcon,
-  AcademicCapIcon,
+  // AcademicCapIcon,
   BanknotesIcon,
   CalendarDaysIcon,
   UserCircleIcon,
@@ -46,16 +46,21 @@ const navigation = [
     count: 12,
   },
   {
+    name: "Products",
+    icon: WrenchScrewdriverIcon,
+    href: "/products",
+  },
+  {
     name: "Services",
     icon: WrenchScrewdriverIcon,
     href: "/services",
   },
-  {
-    name: "Edu Contents",
-    icon: AcademicCapIcon,
-    href: "/educational-contents",
-    count: 12,
-  },
+  // {
+  //   name: "Edu Contents",
+  //   icon: AcademicCapIcon,
+  //   href: "/educational-contents",
+  //   count: 12,
+  // },
   {
     name: "Orders",
     icon: ShoppingBagIcon,
@@ -264,7 +269,7 @@ export default function Layout() {
             <div className="flex justify-between items-center flex-shrink-0 ml-[19.4rem] mr-12">
               <Link to="users/user/profile" className="hover:cursor-pointer">
                 <div className="group block w-full flex-shrink-0">
-                  Hey! Welcome {user?.name.split(' ')[0]}
+                  Hey! Welcome {user?.firstName}
                 </div>
               </Link>
               <div>

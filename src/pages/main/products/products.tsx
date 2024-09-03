@@ -3,42 +3,51 @@ import { PlusCircleIcon } from "@heroicons/react/20/solid";
 import Button from "components/buttons/Button";
 import Table from "components/Table";
 import { Column } from "components/Table/types";
+import Modal from "components/Modal";
 import Header from "components/Header";
+import ViewProduct from "./components/view";
 import usePagination from "components/hooks/usePagination";
 import { useQuery } from "react-query";
 import { get } from "api";
 import { MoonLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 
-const Users: FC<{}> = () => {
-  const [, setSelected] = useState<any>({});
+const Products: FC<{}> = () => {
+  const [showView, setShowView] = useState(false);
+
+  const [selected, setSelected] = useState<any>({});
   const navigate = useNavigate();
 
   const columns: Column[] = [
     {
-      headerText: "Name",
-      keys: { type: "text", value: ["fullName"] },
+      headerText: "Product",
+      keys: { type: "text", value: ["name"] },
       type: "text",
     },
     {
-      headerText: "User role",
-      keys: { type: "text", value: ["role"] },
+      headerText: "Price",
+      keys: { type: "currency", value: ["price"] },
       type: "text",
     },
     {
-      headerText: "Email",
-      keys: { type: "text", value: ["email"] },
+      headerText: "Quantity",
+      keys: { type: "text", value: ["quantity"] },
       type: "text",
     },
     {
-      headerText: "Phone",
-      keys: { type: "text", value: ["phone"] },
+      headerText: "Threshold",
+      keys: { type: "text", value: ["threshold"] },
+      type: "text",
+    },
+    {
+      headerText: "Status",
+      keys: { type: "text", value: ["status"] },
       type: "text",
     },
     {
       headerText: "Created On",
-      type: "date",
       keys: { type: "date", value: ["createdAt"] },
+      type: "date",
       format: "MMM DD, YYYY",
     },
     {
@@ -49,7 +58,8 @@ const Users: FC<{}> = () => {
           name: "view",
           onClick: (e, dataFromTable) => {
             e?.preventDefault();
-            navigate("user/profile", { state: dataFromTable });
+            setShowView(true);
+            setSelected(dataFromTable);
             return null;
           },
         },
@@ -58,7 +68,7 @@ const Users: FC<{}> = () => {
           onClick: (e, dataFromTable) => {
             e?.preventDefault();
             setSelected(dataFromTable);
-            navigate("update-user", { state: dataFromTable });
+            navigate("update-product", { state: dataFromTable });
           },
         },
         {
@@ -74,8 +84,10 @@ const Users: FC<{}> = () => {
 
   const { Pagination, page, limit } = usePagination(1, 10);
 
-  const { data, isFetching } = useQuery(["userList", page], () =>
-    get("/users", { params: { page, limit } })
+  const { data, isFetching } = useQuery(["productList", page], () =>
+    get("/products", {
+      params: { page, limit, populate: ["categories"] },
+    })
   );
 
   return (
@@ -83,14 +95,14 @@ const Users: FC<{}> = () => {
       <div className="md:mt-4 md:px-12">
         <div className="px-4 sm:px-6 lg:px-8">
           <Header
-            title="Users"
-            description="A list of all the user in your account including their name, title, email and role."
+            title="Products"
+            description="A list of all the products."
           >
             <Button
               Icon={<PlusCircleIcon className="w-4" />}
-              text={"Add user"}
-              type={"link"}
-              path={"/createuser"}
+              text={"New Product"}
+              type={"primary-link"}
+              path={"create-product"}
               onClick={() => null}
               hasIcon={true}
             />
@@ -115,14 +127,19 @@ const Users: FC<{}> = () => {
                   </div>
                 </div>
               </div>
-              <Pagination hasMore={true} total={data?.total} />
+              <Pagination hasMore={true} total={data?.data?.length} />
             </>
           )}
         </div>
       </div>
-      
+      {/* View single product */}
+      <>
+        <Modal show={showView} setShow={setShowView}>
+          <ViewProduct selected={selected} />
+        </Modal>
+      </>
     </>
   );
 };
 
-export default Users;
+export default Products;

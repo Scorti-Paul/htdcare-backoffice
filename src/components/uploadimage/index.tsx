@@ -1,5 +1,5 @@
 import defaultImg from "assets/images/defaultImage.jpg";
-const UploadImage = ({ tempUrl, defaultImage }: any) => {
+const UploadImage = ({ tempUrl, defaultImage, uploadHeaderText }: any) => {
   return (
     <>
       <div className="flex gap-5">
@@ -11,7 +11,7 @@ const UploadImage = ({ tempUrl, defaultImage }: any) => {
           />
         </div>
         <div className="mt-4"> 
-          <h3 className="text-darkBlue text-xl font-medium">Upload your picture</h3>
+          <h3 className="text-darkBlue text-xl font-medium">{uploadHeaderText !== '' ? uploadHeaderText : 'Upload your picture'}</h3>
           <p className="text-darkBlue/50 max-w-sm text-sm">For best results, use an image at least 600px by 600px in either .jpg or .png format</p>
         </div>
       </div>

@@ -6,119 +6,33 @@ import Header from '../../../../components/Header'
 import DoubleButton from '../../../../components/buttons/doubleButton'
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useMutation } from 'react-query'
-import { updateVendor } from '../../../../api/mutations/vendors'
+import { useMutation, useQuery } from 'react-query'
+import { updateAppointment } from '../../../../api/mutations/appointment'
 import { toast } from 'react-toastify'
+import Select from 'react-select'
+import { get } from 'api'
+
 
 const UpdateAppointment: FC<{}> = () => {
-  const [vendorData, setVendorData] = useState<any>('')
-  const [showPassword, setShowPassword] = useState(true)
-
+  const [appointmentData, setAppointmentData] = useState<any>('')
+  const [, setSearchString] = useState<string>("");
+  const [selectedService, setSelectedService] = useState<string[]>([]);
+  const [selectedPatient, setSelectedPatient] = useState<string[]>([]);
+  const [selectedDentist, setSelectedDentist] = useState<string[]>([]);
   const { state } = useLocation()
   const navigate = useNavigate()
 
-  const handleShowHidePassword = () => {
-    setShowPassword(!showPassword)
-  }
-
-  const handleChange = (e: any) => {
-    setVendorData({
-      ...vendorData,
-      [e.target.name]: e.target.value,
-    })
-  }
-
-  const { mutateAsync, isLoading } = useMutation({
-    mutationFn: (body: any) => {
-      return updateVendor({ ...body, id: state?._id })
-    },
-    onError: (e) => {
-      toast?.error('There was an error updating')
-    },
-    onSuccess: () => {
-      toast?.success('Vendor updated successfully')
-      navigate('/vendors')
-    },
-  })
-
-  const handleSubmission = useCallback(
-    (e: any) => {
-      //
-      e?.preventDefault()
-
-      if (vendorData.name === undefined) {
-        return toast?.error("Company name can't be empty")
-      }
-
-      if (vendorData.type === undefined) {
-        return toast?.error('Select vendor type')
-      }
-
-      if (vendorData.email === undefined) {
-        return toast?.error("Email can't be empty")
-      }
-
-      if (vendorData.phone === undefined) {
-        return toast?.error("Phone number can't be empty")
-      }
-
-      if (vendorData.address === undefined) {
-        return toast?.error("Address can't be empty")
-      }
-
-      if (vendorData.location === undefined) {
-        return toast?.error("Location can't be empty")
-      }
-
-      if (vendorData.digitalAddress === undefined) {
-        return toast?.error("Digital address can't be empty")
-      }
-
-      if (vendorData.password === undefined) {
-        return toast?.error("Password can't be empty")
-      }
-
-      if (vendorData.confirmPassword === undefined) {
-        return toast?.error("Confirm password can't be empty")
-      }
-
-      if (
-        vendorData.email.split('').filter((x: any) => x === '@').length !==
-          -1 &&
-        vendorData.email.indexOf('.') === -1
-      ) {
-        return toast?.error('Email is invalid')
-      }
-
-      if (vendorData.password !== vendorData.confirmPassword) {
-        return toast?.error('password and confirm password are not the same')
-      }
-
-      mutateAsync({
-        ...vendorData,
-      })
-    },
-    [vendorData, mutateAsync],
-  )
-
-  const venderTypeOptions = [
-    { value: 'Service', text: 'Service' },
-    { value: 'Product', text: 'Product' },
-  ]
-
+  
   const initialCheck = useCallback(() => {
     if (state) {
-      setVendorData({
-        name: state?.name,
-        type: state?.type,
-        email: state?.email,
-        phone: state?.phone,
-        alternativePhoneNumber: state?.alternativePhoneNumber,
-        address: state?.address,
-        location: state?.location,
-        dateOfReg: state?.dateOfReg,
-        digitalAddress: state?.digitalAddress,
-        password: state?.password,
+      setAppointmentData({
+        id: state._id,
+        patient: state?.patient?.user._id,
+        dentist: state?.patient?.user._id,
+        service: state?._id,
+        date: state?.date,
+        reason: state?.reason,
+        status: state?.status
       })
     }
   }, [state])
@@ -127,19 +41,108 @@ const UpdateAppointment: FC<{}> = () => {
     initialCheck()
   }, [initialCheck])
 
+  
+  console.log(selectedPatient)
+  console.log(appointmentData)
+
+
+  const { data: serviceData, isFetching: isFetchingService } = useQuery(
+    ["services"],
+    () => get("/services")
+  );
+
+  const { data: patientData, isFetching: isFetchingPatient } = useQuery(
+    ["patients"],
+    () => get("/patients", { params: { populate: ["user"] } })
+  );
+
+  const { data: dentistData, isFetching: isFetchingDentist } = useQuery(
+    ["dentists"],
+    () => get("/dentists", { params: { populate: ["user"] } })
+  );
+
+  const handleChange = (e: any) => {
+    setAppointmentData({
+      ...appointmentData,
+      [e.target.name]: e.target.value,
+    })
+  }
+
+  const { mutateAsync, isLoading } = useMutation({
+    mutationFn: (body: any) => {
+      return updateAppointment({ ...body, id: state?._id })
+    },
+    onError: (e) => {
+      toast?.error('There was an error updating')
+    },
+    onSuccess: () => {
+      toast?.success('Appointment updated successfully')
+      navigate('/appointments')
+    },
+  })
+
+  const handleSubmission = useCallback(
+    (e: any) => {
+      //
+      e?.preventDefault()
+
+      if (Object.keys(selectedPatient).length === 0) {
+        return toast?.error("Select patient you want to book");
+      }
+
+      if (Object.keys(selectedService).length === 0) {
+        return toast?.error("Select service you want to book");
+      }
+
+      if (Object.keys(selectedDentist).length === 0) {
+        return toast?.error("Select dentist you want to book");
+      }
+
+      if (appointmentData.date === undefined) {
+        return toast?.error("Choose appointment date");
+      }
+
+      if (appointmentData.reason === undefined) {
+        return toast?.error("Write brief reason for your appointment");
+      }
+console.log("SP: ", selectedPatient)
+      mutateAsync({
+        id: appointmentData.id,
+        patient: selectedPatient,
+        dentist: selectedDentist,
+        service: selectedService,
+        date: appointmentData.date,
+        status: appointmentData.status,
+        reason: appointmentData.reason
+      })
+
+    },
+    [appointmentData, mutateAsync, selectedDentist, selectedPatient, selectedService],
+  )
+
+  // console.log(appointmentData.reason)
+
+  const statusOptions = [
+    { text: 'Select status', value: '' },
+    { text: 'Schedule', value: 'Schedule' },
+    { text: 'Approval', value: 'Approval' },
+    { text: 'Completed', value: 'Completed' },
+    { text: 'Cancelled', value: 'Cancelled' },
+  ]
+
   return (
     <>
       <div className="md:mt-4 md:px-12">
         <div className="px-4 sm:px-6 lg:px-8">
           <Header
-            title="Update Vendors"
-            description="Fill out the details to sign up a new vendor."
+            title="Update Appointments"
+            description="Fill out the details to sign up a new appointment."
           >
             <Button
               Icon={<EyeIcon className="w-4" />}
-              text={'Vendors'}
-              type={'link'}
-              path={'/vendors'}
+              text={'Appointments'}
+              type={'secondary-link'}
+              path={'/appointments'}
               onClick={() => null}
               hasIcon={true}
             />
@@ -148,192 +151,125 @@ const UpdateAppointment: FC<{}> = () => {
           <div className="">
             <div className="mt-5 md:col-span-2 md:mt-0">
               <form onSubmit={handleSubmission}>
-                <div className="overflow-hidden shadow sm:rounded-md">
-                  <div className="bg-white px-4 py-5 sm:p-6">
+                <div className="overflow-hidden">
+                  <div className="py-5 px-1">
                     <div className="grid grid-cols-6 gap-6">
+                      <div className='col-span-2 mt-1'>
+                        <label htmlFor="patient" className="block text-sm font-medium text-gray-700 mb-1.5">
+                          Patient
+                        </label>
+                        <Select
+                          onInputChange={(e) => setSearchString(e)}
+                          className="basic-single"
+                          classNamePrefix="select"
+                          isLoading={isFetchingPatient}
+                          isClearable={true}
+                          isSearchable={true}
+                          onChange={(e: any) => setSelectedPatient(e?.value)}
+                          isMulti={false}
+                          name="patient"
+                          options={patientData?.data?.map((item: any) => {
+                            return {
+                              value: item?._id,
+                              label: item?.user.fullName,
+                            };
+                          })}
+                        />
+                      </div>
+
+                      <div className='col-span-2 mt-1'>
+                        <label htmlFor="dentist" className="block text-sm font-medium text-gray-700 mb-1.5">
+                          Dentist
+                        </label>
+                        <Select
+                          onInputChange={(e) => setSearchString(e)}
+                          className="basic-single"
+                          classNamePrefix="select"
+                          isLoading={isFetchingDentist}
+                          isClearable={true}
+                          isSearchable={true}
+                          onChange={(e: any) => setSelectedDentist(e?.value)}
+                          isMulti={false}
+                          name="dentist"
+                          options={dentistData?.data?.map((item: any) => {
+                            return {
+                              value: item?._id,
+                              label: item?.user.fullName,
+                            };
+                          })}
+                        />
+                      </div>
+
+                      <div className='col-span-2 mt-1'>
+                        <label htmlFor="service" className="block text-sm font-medium text-gray-700 mb-1.5">
+                          What service do you want to book?
+                        </label>
+                        <Select
+                          onInputChange={(e) => setSearchString(e)}
+                          className="basic-single"
+                          classNamePrefix="select"
+                          isLoading={isFetchingService}
+                          isClearable={true}
+                          isSearchable={true}
+                          onChange={(e: any) => setSelectedService(e?.value)}
+                          isMulti={false}
+                          name="service"
+                          options={serviceData?.data?.map((item: any) => {
+                            return {
+                              value: item?._id,
+                              label: item?.name,
+                            };
+                          })}
+                        />
+                      </div>
+
                       <Input
-                        label="Company name"
-                        name="name"
-                        inputLength="small"
-                        placeholder="eg. Farmercom LTD"
-                        value={vendorData['name'] || ''}
+                        label="Choose date for the appointment"
+                        name="date"
+                        value={appointmentData["date"] || ""}
                         onChange={handleChange}
-                        type="text"
-                        field="input"
-                        optionalLabel={true}
                         hasShowPassword="disable"
+                        required
+                        inputLength="medium"
+                        type="date"
+                        field="input"
+                        optionalLabel={false}
                         autoComplete="true"
                       />
+
                       <Input
-                        label="Vendor Type"
-                        name="type"
-                        inputLength="small"
-                        placeholder=""
-                        value={vendorData['type'] || ''}
+                        label="Status"
+                        name="status"
+                        value={appointmentData["status"] || ""}
                         onChange={handleChange}
                         hasShowPassword="disable"
-                        selectOptions={venderTypeOptions}
-                        optionalLabel={true}
+                        required
+                        inputLength="medium"
                         type="select"
                         field="select"
-                      />
-
-                      <Input
-                        label="Email address"
-                        optionalLabel={true}
-                        name="email"
-                        inputLength="small"
-                        placeholder="you@example.com"
-                        value={vendorData['email'] || ''}
-                        onChange={handleChange}
-                        hasShowPassword="disable"
-                        type="email"
-                        field="input"
+                        optionalLabel={false}
+                        selectOptions={statusOptions}
                         autoComplete="true"
                       />
 
                       <Input
-                        label="Phone number"
-                        name="phone"
-                        inputLength="medium"
-                        placeholder="(+233) xx xxx xxxx"
-                        value={vendorData['phone'] || ''}
-                        onChange={handleChange}
-                        type="tel"
-                        hasShowPassword="disable"
-                        optionalLabel={true}
-                        field="input"
-                        autoComplete="true"
-                      />
-
-                      <Input
-                        label="Other Phone number"
-                        name="alternativePhoneNumber"
-                        inputLength="medium"
-                        placeholder="(+233) xx xxx xxxx"
-                        value={vendorData['alternativePhoneNumber'] || ''}
-                        onChange={handleChange}
-                        type="tel"
-                        hasShowPassword="disable"
-                        field="input"
-                        autoComplete="true"
-                      />
-
-                      <Input
-                        label="Registered address"
-                        name="address"
-                        inputLength="medium"
-                        placeholder=""
-                        value={vendorData['address'] || ''}
-                        onChange={handleChange}
-                        hasShowPassword="disable"
-                        type="text"
-                        optionalLabel={true}
-                        field="input"
-                        autoComplete="true"
-                      />
-
-                      <Input
-                        label="Registered location"
-                        name="location"
-                        inputLength="medium"
-                        placeholder=""
-                        value={vendorData['location'] || ''}
-                        onChange={handleChange}
-                        type="text"
-                        hasShowPassword="disable"
-                        optionalLabel={true}
-                        field="input"
-                        autoComplete="true"
-                      />
-
-                      <Input
-                        label="Registered Date"
-                        name="dateOfReg"
-                        inputLength="medium"
-                        placeholder=""
-                        value={vendorData['dateOfReg'] || ''}
-                        onChange={handleChange}
-                        type="date"
-                        hasShowPassword="disable"
-                        field="input"
-                        autoComplete="true"
-                      />
-
-                      <Input
-                        label="Digital address / Land mark"
-                        name="digitalAddress"
-                        inputLength="medium"
-                        placeholder="GA-543-0125"
-                        value={vendorData['digitalAddress'] || ''}
-                        onChange={handleChange}
-                        type="text"
-                        field="input"
-                        hasShowPassword="disable"
-                        optionalLabel={true}
-                        autoComplete="true"
-                      />
-
-                      {/* <Input
-                        label="Number of outlets"
-                        name="numberOfOutlets"
-                        inputLength="small"
-                        value={vendorData['numberOfOutlets'] || ''}
-                        onChange={handleChange}
-                        placeholder=""
-                        type="number"
-                        field="input"
-                        autoComplete="true"
-                      />
-
-                      <Input
-                        label="Name of outlets (Separated by a comma)"
-                        name="outlets"
-                        inputLength="large"
-                        placeholder="Akim Oda/ Kusi, ..."
-                        onChange={handleChange}
-                        value={vendorData['outlets']}
+                        label="Reason for the appointment"
                         type="text"
                         field="textarea"
-                        autoComplete="true"
+                        onChange={handleChange}
+                        inputLength="large"
+                        placeholder="Brief description about the reason for the visit."
+                        name="reason"
+                        value={appointmentData.reason}
+                        hasShowPassword="disable"
                         optionalLabel={false}
-                      /> */}
-
-                      <Input
-                        label="Password"
-                        name="password"
-                        inputLength="medium"
-                        placeholder="*************"
-                        value={vendorData['password'] || ''}
-                        onChange={handleChange}
-                        type="text"
-                        field="input"
-                        optionalLabel={true}
-                        hasShowPassword={showPassword}
-                        handleShowHidePassword={handleShowHidePassword}
-                        autoComplete="true"
-                      />
-
-                      <Input
-                        label="Confirm password"
-                        name="confirmPassword"
-                        inputLength="medium"
-                        placeholder="*************"
-                        value={vendorData['confirmPassword'] || ''}
-                        onChange={handleChange}
-                        type="text"
-                        field="input"
-                        hasShowPassword={showPassword}
-                        handleShowHidePassword={handleShowHidePassword}
-                        optionalLabel={true}
                         autoComplete="true"
                       />
                     </div>
                   </div>
-
                   <DoubleButton
                     loading={isLoading}
-                    buttonText="Update vendor"
+                    buttonText="Update appointment"
                     onClick={handleSubmission}
                   />
                 </div>
