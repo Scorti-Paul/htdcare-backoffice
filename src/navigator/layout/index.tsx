@@ -11,7 +11,7 @@ import {
   WrenchScrewdriverIcon,
   ChevronUpIcon,
   GiftIcon,
-  AcademicCapIcon,
+  // AcademicCapIcon,
   BanknotesIcon,
   CalendarDaysIcon,
   UserCircleIcon,
@@ -55,12 +55,12 @@ const navigation = [
     icon: WrenchScrewdriverIcon,
     href: "/services",
   },
-  {
-    name: "Edu Contents",
-    icon: AcademicCapIcon,
-    href: "/educational-contents",
-    count: 12,
-  },
+  // {
+  //   name: "Edu Contents",
+  //   icon: AcademicCapIcon,
+  //   href: "/educational-contents",
+  //   count: 12,
+  // },
   {
     name: "Orders",
     icon: ShoppingBagIcon,
