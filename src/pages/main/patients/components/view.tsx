@@ -35,9 +35,9 @@ export default function ViewPatient() {
   const patientDetails = [
     { icon: UserIcon, label: 'Gender', state: state.gender },
     { icon: CalendarIcon, label: 'Date of Birth', state: moment(state.birthDate)?.format("MMM DD, YYYY") },
-    { icon: PhoneIcon, label: 'Phone', state: state.phone },
+    { icon: PhoneIcon, label: 'Phone', state: state.user.phone },
     { icon: MapPinIcon, label: 'Address', state: state.location.address },
-    { icon: EnvelopeIcon, label: 'Email', state: state.email },
+    { icon: EnvelopeIcon, label: 'Email', state: state.user.email },
     { icon: WalletIcon, label: state.identification.cardType, state: state.identification.cardNumber },
     { icon: UsersIcon, label: 'Marital Status', state: state.maritalStatus },
     { icon: BriefcaseIcon, label: 'Occupation', state: state.occupation },
@@ -72,11 +72,11 @@ export default function ViewPatient() {
       keys: { type: "text", value: ["diagnosis"] },
       type: "text",
     },
-    {
-      headerText: "Procedure",
-      keys: { type: "text", value: ["procedure"] },
-      type: "text",
-    },
+    // {
+    //   headerText: "Procedure",
+    //   keys: { type: "text", value: ["procedure"] },
+    //   type: "text",
+    // },
     {
       headerText: "Created On",
       type: "date",
@@ -141,7 +141,7 @@ export default function ViewPatient() {
                 <img src='https://firebasestorage.googleapis.com/v0/b/backoffice-staging-c8a4a.appspot.com/o/images%2F1694076769549.jpeg?alt=media&token=3ad47252-312e-4e12-8c64-25664a389cf8' alt="" className={`rounded-full w-20 h-20 inline-block border-2 border-white -mt-12`} />
               </div>
               <p className="text-xl font-medium text-darkBlue mt-3 mb-1  text-center">
-                {`${state.firstName} ${state.surname} ${state?.otherName !== undefined ? state?.otherName : ''}`}
+                {`${state.user.fullName}`}
               </p>
               <p className="text-darkBlue/60  text-center">{age} Years old</p>
               <div className="w-full h-0.5 bg-gray-100 my-6"></div>
