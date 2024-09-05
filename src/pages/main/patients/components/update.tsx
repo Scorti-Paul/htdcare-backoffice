@@ -6,15 +6,14 @@ import Header from "components/Header";
 import { useState } from "react";
 import DoubleButton from "components/buttons/doubleButton";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { updatePatient } from "api/mutations/patients";
 import { toast } from "react-toastify";
-import { get } from "api";
 import useUploadImage from "components/hooks/useUploadImage";
 import UploadImage from "components/uploadimage";
 
 const UpdatePatient: FC<{}> = () => {
-  const [productData, setProductData] = useState<any>("");
+  const [patientData, setPatientData] = useState<any>("");
   const { state } = useLocation();
   const [image, setImage] = useState<any>(null);
   const [tempUrl, setTempUrl] = useState<string>("");
@@ -23,82 +22,11 @@ const UpdatePatient: FC<{}> = () => {
   const { uploadImage, loading } = useUploadImage();
 
   const handleChange = (e: any) => {
-    setProductData({
-      ...productData,
+    setPatientData({
+      ...patientData,
       [e.target.name]: e.target.value,
     });
   };
-
-  const statusOption = [
-    { value: "", text: "Select status" },
-    { value: "Active", text: "Active" },
-    { value: "Inactive", text: "Inactive" },
-  ];
-
-  const { data, isFetching } = useQuery(["allVendors"], () => get("/vendors"));
-
-  const { data: categoryData, isFetching: isFetchingCategory } = useQuery(
-    ["allCategories"],
-    () => get("/category")
-  );
-
-  const { mutateAsync, isLoading } = useMutation({
-    mutationFn: (body: any) => {
-      return updatePatient({ ...body, id: state?._id });
-    },
-    onError: (e) => {
-      toast?.error("There was an error");
-    },
-    onSuccess: () => {
-      toast?.success("Product updated successfully");
-      navigate("/products");
-    },
-  });
-
-  const handleSubmission = useCallback(
-    (e: any) => {
-      //
-      e?.preventDefault();
-
-      if (productData.name === undefined) {
-        return toast?.error("Name can't be empty");
-      }
-
-      // if (productData.category === undefined) {
-      //   return toast?.error('Select produce category')
-      // }
-
-      if (productData.stock === undefined) {
-        return toast?.error("Select produce type");
-      }
-
-      if (productData.sellersPrice === undefined) {
-        return toast?.error("Seller's price can't be empty");
-      }
-
-      if (productData.sellersPrice === undefined) {
-        return toast?.error("Seller's price can't be empty");
-      }
-
-      if (productData.status === undefined) {
-        return toast?.error("Select status");
-      }
-
-      uploadImage(image)
-        ?.then((link: string) => {
-          mutateAsync({
-            ...productData,
-            image: link,
-            type: "product",
-          });
-          navigate("/products");
-        })
-        ?.catch((e) => {
-          toast?.warning(e?.message);
-        });
-    },
-    [productData, mutateAsync, image, uploadImage, navigate]
-  );
 
   const createTemp = useCallback(() => {
     if (image) {
@@ -111,17 +39,136 @@ const UpdatePatient: FC<{}> = () => {
     createTemp();
   }, [createTemp]);
 
+  const statusOption = [
+    { value: "", text: "Select status" },
+    { value: "Active", text: "Active" },
+    { value: "Inactive", text: "Inactive" },
+  ];
+
+  const genderOptions = [
+    { text: 'Select gender', value: '' },
+    { text: 'Male', value: 'Male' },
+    { text: 'Female', value: 'Female' },
+  ]
+
+  const maritalStatusOptions = [
+    { text: 'Select marital status', value: '' },
+    { text: 'Single', value: 'Single' },
+    { text: 'Married', value: 'Married' },
+    { text: 'Divorced', value: 'Divorced' },
+    { text: 'Windowed', value: 'Windowed' },
+  ]
+
+  const cardTypeOptions = [
+    { text: 'Select card type', value: '' },
+    { text: 'Ghana Card', value: 'Ghana Card' },
+    { text: 'Voter ID', value: 'Voter ID' },
+    { text: 'Passport', value: 'Passport' },
+  ]
+
+  const { mutateAsync, isLoading } = useMutation({
+    mutationFn: (body: any) => {
+      return updatePatient({ ...body, id: state?._id });
+    },
+    onError: (e) => {
+      toast?.error("There was an error");
+    },
+    onSuccess: () => {
+      toast?.success("Patient updated successfully");
+      navigate("/patients");
+    },
+  });
+
+  const handleSubmission = useCallback(
+    (e: any) => {
+      //
+      e?.preventDefault();
+
+      if (patientData.firstName === undefined) {
+        return toast?.error("First name can't be empty");
+      }
+
+      if (patientData.surname === undefined) {
+        return toast?.error("Surname must be provided");
+      }
+
+      if (patientData.phone === undefined) {
+        return toast?.error("Phone number is required");
+      }
+
+      if (patientData.birthDate === undefined) {
+        return toast?.error("Choose patient's date of birth");
+      }
+
+      if (patientData.gender === undefined) {
+        return toast?.error("Select gender");
+      }
+
+      if (patientData.maritalStatus === undefined) {
+        return toast?.error("Select marital status");
+      }
+
+      if (patientData.cardType === undefined) {
+        return toast?.error("Select card type");
+      }
+
+      if (patientData.cardNumber === undefined) {
+        return toast?.error("Card number is  is required");
+      }
+
+      if (patientData.address === undefined) {
+        return toast?.error("Address  is required");
+      }
+
+      uploadImage(image)
+        ?.then((link: string) => {
+          mutateAsync({
+            ...patientData,
+            image: link,
+            emergencyContact: {
+              name: patientData.emergencyContactName,
+              phone: patientData.emergencyPhone,
+              relation: patientData.emergencyContactRelation,
+            },
+            location: {
+              address: patientData.address,
+              digital: patientData.digital,
+              landmark: patientData.landmark
+            },
+            identification: {
+              cardType: patientData.cardType,
+              cardNumber: patientData.cardNumber
+            }
+          });
+          navigate("/patients");
+        })
+        ?.catch((e) => {
+          toast?.warning(e?.message);
+        });
+    },
+    [patientData, mutateAsync, image, uploadImage, navigate]
+  );
+
+
   const initialCheck = useCallback(() => {
     if (state) {
-      setProductData({
+      setPatientData({
         image: state?.image,
-        name: state?.name,
-        category: state?.category,
-        vendor: state?.vendor,
-        measuringUnit: state?.measuringUnit,
-        stock: state?.stock,
-        sellersPrice: state?.sellersPrice,
-        costPrice: state?.costPrice,
+        firstName: state?.user?.firstName,
+        surname: state?.user?.surname,
+        otherName: state?.user?.otherName,
+        phone: state?.user?.phone,
+        birthDate: state?.birthDate,
+        emergencyPhone: state?.emergencyContact?.phone,
+        email: state?.user?.email,
+        gender: state?.gender,
+        maritalStatus: state?.maritalStatus,
+        occupation: state?.occupation,
+        cardType: state?.identification?.cardType,
+        cardNumber: state?.identification?.cardNumber,
+        address: state?.location?.address,
+        digital: state?.location?.digital,
+        landmark: state?.location?.landmark,
         status: state?.status,
         description: state?.description,
       });
@@ -136,186 +183,311 @@ const UpdatePatient: FC<{}> = () => {
       <div className="md:mt-4 md:px-12">
         <div className="px-4 sm:px-6 lg:px-8">
           <Header
-            title="Update Product"
-            description="Fill out the details to sign up a new product."
+            title="Update Patient"
+            description="Fill out the details to sign up a new patient."
           >
             <Button
               Icon={<EyeIcon className="w-4" />}
-              text={"Products"}
-              type={"link"}
-              path={"/products"}
+              text={"Patients"}
+              type={"secondary-link"}
+              path={"/patients"}
               onClick={() => null}
               hasIcon={true}
             />
           </Header>
-
           <div className="">
             <div className="mt-5 md:col-span-2 md:mt-0">
               <form onSubmit={handleSubmission}>
-                <div className="overflow-hidden shadow sm:rounded-md">
-                  <div className="bg-white px-4 py-5 sm:p-6 sm:block md:flex md:justify-between md:gap-4">
+                <div className="overflow-hidden">
+                  <div className="bg-white py-5 px-1 sm:block">
                     <div className="md:w-5/12">
-                      <UploadImage tempUrl={tempUrl} defaultImage={image} />
-                      <Input
-                        label=""
-                        name="image"
-                        inputLength="medium"
-                        value={productData["image"] || ""}
-                        onChange={(e) => {
-                          setImage(e?.target?.files[0]);
-                        }}
-                        placeholder=""
-                        type="file"
-                        field="upload"
-                        optionalLabel={true}
-                      />
+                      <UploadImage tempUrl={tempUrl} uploadHeaderText="Update Patient Photo" defaultImage={image} />
+                      <div className="-mt-[5.6rem]">
+                        <Input
+                          label=""
+                          name="image"
+                          inputLength="medium"
+                          value={patientData["image"] || ""}
+                          onChange={(e) => {
+                            setImage(e?.target?.files[0]);
+                          }}
+                          placeholder=""
+                          type="file"
+                          field="upload"
+                          optionalLabel={true}
+                        />
+                      </div>
                     </div>
                     <div className="w-full grid grid-cols-6 gap-6">
-                      <Input
-                        label="Product name"
-                        name="name"
-                        inputLength="medium"
-                        placeholder="eg. Spraying machine"
-                        value={productData["name"] || ""}
-                        onChange={handleChange}
-                        optionalLabel={true}
-                        hasShowPassword="disable"
-                        type="text"
-                        field="input"
-                        autoComplete="true"
-                      />
-
-                      <div className={"col-span-6 sm:col-span-3"}>
-                        <label
-                          htmlFor="category"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Category
-                        </label>
-                        <select
-                          name="category"
+                      <div className="col-span-2">
+                        <Input
+                          label="Surname"
+                          name="surname"
+                          inputLength="large"
+                          placeholder="eg. Doe"
+                          value={patientData["surname"] || ""}
                           onChange={handleChange}
-                          value={productData["category"] || ""}
-                          className={
-                            "mt-1 block w-full rounded-md text-gray-400 border-gray-300 shadow-sm resize-none placeholder:text-gray-400 focus:border-green-500 focus:ring-green-500 sm:text-sm"
-                          }
-                        >
-                          <option>Select Category</option>
-                          {isFetchingCategory ? (
-                            <option>Loading...</option>
-                          ) : (
-                            categoryData?.data?.map((category: any) => (
-                              <option key={category?._id} value={category?._id}>
-                                {category?.name}
-                              </option>
-                            ))
-                          )}
-                        </select>
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="text"
+                          field="input"
+                          autoComplete="true"
+                        />
                       </div>
 
-                      <div className={"col-span-6 sm:col-span-3"}>
-                        <label
-                          htmlFor="vendor"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Vendor
-                        </label>
-                        <select
-                          name="vendor"
+                      <div className="col-span-2">
+                        <Input
+                          label="First name"
+                          name="firstName"
+                          inputLength="small"
+                          placeholder="eg. John"
+                          value={patientData["firstName"] || ""}
                           onChange={handleChange}
-                          value={productData["vendor"] || ""}
-                          className={
-                            "mt-1 block w-full rounded-md text-gray-400 border-gray-300 shadow-sm resize-none placeholder:text-gray-400 focus:border-green-500 focus:ring-green-500 sm:text-sm"
-                          }
-                        >
-                          <option>Select Vendor</option>
-                          {isFetching ? (
-                            <option>Loading...</option>
-                          ) : (
-                            data?.data?.map((ven: any) => (
-                              <option key={ven?._id} value={ven?._id}>
-                                {ven?.name}
-                              </option>
-                            ))
-                          )}
-                        </select>
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="text"
+                          field="input"
+                          autoComplete="true"
+                        />
+                      </div>
+
+                      <div className="col-span-2">
+                        <Input
+                          label="Other name"
+                          name="otherName"
+                          inputLength="small"
+                          placeholder="Enter any other name"
+                          value={patientData["otherName"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="text"
+                          field="input"
+                          autoComplete="true"
+                        />
+                      </div>
+
+                      <div className="col-span-2">
+                        <Input
+                          label="Phone"
+                          name="phone"
+                          inputLength="small"
+                          placeholder="Enter any other name"
+                          value={patientData["phone"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          maxLength={10}
+                          max={10}
+                          type="tel"
+                          field="input"
+                          autoComplete="true"
+                        />
+                      </div>
+
+                      <div className="col-span-2">
+                        <Input
+                          label="Emergency Phone"
+                          name="emergencyPhone"
+                          inputLength="small"
+                          placeholder="Enter any other name"
+                          value={patientData["emergencyPhone"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          maxLength={10}
+                          type="tel"
+                          field="input"
+                          autoComplete="true"
+                        />
+                      </div>
+
+                      <div className="col-span-2">
+                        <Input
+                          label="Date of Birth"
+                          name="birthDate"
+                          inputLength="small"
+                          placeholder="Enter any other name"
+                          value={patientData["birthDate"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="date"
+                          field="input"
+                          autoComplete="true"
+                        />
+                      </div>
+
+                      <div className="col-span-2">
+                        <Input
+                          label="Gender"
+                          name="gender"
+                          inputLength="small"
+                          placeholder="Select gender"
+                          value={patientData["gender"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="select"
+                          field="select"
+                          selectOptions={genderOptions}
+                          autoComplete="true"
+                        />
+                      </div>
+
+                      <div className="col-span-2">
+                        <Input
+                          label="Marital Status"
+                          name="maritalStatus"
+                          inputLength="small"
+                          placeholder="Select gender"
+                          value={patientData["maritalStatus"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="select"
+                          field="select"
+                          selectOptions={maritalStatusOptions}
+                          autoComplete="true"
+                        />
+                      </div>
+
+                      <div className="col-span-2">
+                        <Input
+                          label="Occupation"
+                          name="occupation"
+                          inputLength="small"
+                          placeholder="Select gender"
+                          value={patientData["occupation"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="text"
+                          field="input"
+                          autoComplete="true"
+                        />
+                      </div>
+
+                      <div className="col-span-3">
+                        <Input
+                          label="Card Type"
+                          name="cardType"
+                          inputLength="small"
+                          placeholder=""
+                          value={patientData["cardType"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="select"
+                          field="select"
+                          selectOptions={cardTypeOptions}
+                          autoComplete="true"
+                        />
+                      </div>
+
+                      <div className="col-span-3">
+                        <Input
+                          label="Card Number"
+                          name="cardNumber"
+                          inputLength="large"
+                          placeholder="Enter the selected card number"
+                          value={patientData["cardNumber"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="text"
+                          field="input"
+                          autoComplete="true"
+                        />
+                      </div>
+
+                      <div className="col-span-3">
+                        <Input
+                          label="Digital Address"
+                          name="digital"
+                          inputLength="large"
+                          placeholder="e.g. AK-32878-23"
+                          value={patientData["digital"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="text"
+                          field="input"
+                          autoComplete="true"
+                        />
+                      </div>
+
+                      <div className="col-span-3">
+                        <Input
+                          label="Landmark"
+                          name="landmark"
+                          inputLength="large"
+                          placeholder="What is you nearest landmark?"
+                          value={patientData["landmark"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="text"
+                          field="input"
+                          autoComplete="true"
+                        />
+                      </div>
+
+                      <div className="col-span-6">
+                        <Input
+                          label="Address"
+                          name="address"
+                          inputLength="large"
+                          placeholder="Enter your address here"
+                          value={patientData["address"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="text"
+                          field="input"
+                          autoComplete="true"
+                        />
+                      </div>
+
+                      <div className="col-span-6">
+                        <Input
+                          label="Email"
+                          name="email"
+                          inputLength="large"
+                          placeholder="e.g. you@example.com"
+                          value={patientData["email"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="email"
+                          field="input"
+                          autoComplete="true"
+                        />
+                      </div>
+
+                      <div className="col-span-6">
+                        <Input
+                          label="Status"
+                          name="status"
+                          inputLength="large"
+                          placeholder=""
+                          value={patientData["status"] || ""}
+                          onChange={handleChange}
+                          optionalLabel={true}
+                          hasShowPassword="disable"
+                          type="select"
+                          field="select"
+                          selectOptions={statusOption}
+                          autoComplete="true"
+                        />
                       </div>
 
                       <Input
-                        label="Quantity"
-                        name="stock"
-                        onChange={handleChange}
-                        value={productData["stock"] || ""}
-                        inputLength="medium"
-                        placeholder="please enter number of products available"
-                        hasShowPassword="disable"
-                        type="number"
-                        field="input"
-                        autoComplete="true"
-                        optionalLabel={true}
-                      />
-
-                      <Input
-                        label="Measuring unit"
-                        name="measuringUnit"
-                        onChange={handleChange}
-                        value={productData["measuringUnit"] || ""}
-                        inputLength="medium"
-                        placeholder="eg. 340kg"
-                        hasShowPassword="disable"
-                        type="text"
-                        field="input"
-                        autoComplete="true"
-                        optionalLabel={true}
-                      />
-                      <Input
-                        label="Cost price"
-                        name="costPrice"
-                        inputLength="medium"
-                        placeholder="GHC"
-                        value={productData["costPrice"] || ""}
-                        onChange={handleChange}
-                        type="number"
-                        field="input"
-                        hasShowPassword="disable"
-                        optionalLabel={true}
-                      />
-
-                      <Input
-                        label="Seller's price"
-                        name="sellersPrice"
-                        inputLength="medium"
-                        placeholder="GHC "
-                        onChange={handleChange}
-                        value={productData["sellersPrice"] || ""}
-                        hasShowPassword="disable"
-                        type="number"
-                        field="input"
-                        autoComplete="true"
-                        optionalLabel={true}
-                      />
-
-                      <Input
-                        label="Status"
-                        name="status"
-                        onChange={handleChange}
-                        value={productData["status"] || ""}
-                        inputLength="medium"
-                        placeholder=""
-                        hasShowPassword="disable"
-                        type="text"
-                        field="select"
-                        autoComplete="true"
-                        optionalLabel={true}
-                        selectOptions={statusOption}
-                      />
-
-                      <Input
-                        label="Additional information"
+                        label="Bio Data Here"
                         name="description"
                         inputLength="large"
-                        placeholder="Extra info about product goes here"
-                        value={productData["description"] || ""}
+                        placeholder="Bio:"
+                        value={patientData["description"] || ""}
                         onChange={handleChange}
                         type=""
                         field="textarea"
@@ -325,7 +497,7 @@ const UpdatePatient: FC<{}> = () => {
                   </div>
                   <DoubleButton
                     loading={isLoading || loading}
-                    buttonText="Update product"
+                    buttonText="Update patient"
                     onClick={handleSubmission}
                   />
                 </div>
