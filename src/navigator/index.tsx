@@ -30,6 +30,7 @@ import ViewPatient from "pages/main/patients/components/view";
 import Products from "pages/main/products";
 import CreateProduct from "pages/main/products/components/create";
 import UpdateProduct from "pages/main/products/components/update";
+import Payments from "pages/main/payments";
 
 const router = createBrowserRouter([
   {
@@ -116,6 +117,11 @@ const router = createBrowserRouter([
         path: "/orders/update-order",
         element: <UpdateOrder />,
       },
+      {
+        path: "payments",
+        element: <Payments />,
+      },
+
       {
         path: "users",
         element: <Users />,
