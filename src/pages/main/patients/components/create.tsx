@@ -69,12 +69,41 @@ const CreatePatient: FC = () => {
       //
       e?.preventDefault();
 
+      
       if (patientData.firstName === undefined) {
         return toast?.error("First name can't be empty");
       }
 
       if (patientData.surname === undefined) {
         return toast?.error("Surname must be provided");
+      }
+
+      if (patientData.phone === undefined) {
+        return toast?.error("Phone number is required");
+      }
+
+      if (patientData.birthDate === undefined) {
+        return toast?.error("Choose patient's date of birth");
+      }
+
+      if (patientData.gender === undefined) {
+        return toast?.error("Select gender");
+      }
+
+      if (patientData.maritalStatus === undefined) {
+        return toast?.error("Select marital status");
+      }
+
+      if (patientData.cardType === undefined) {
+        return toast?.error("Select card type");
+      }
+
+      if (patientData.cardNumber === undefined) {
+        return toast?.error("Card number is  is required");
+      }
+
+      if (patientData.address === undefined) {
+        return toast?.error("Address  is required");
       }
 
       uploadImage(image)

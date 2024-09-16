@@ -12,7 +12,7 @@ import {
   ChevronUpIcon,
   GiftIcon,
   // AcademicCapIcon,
-  BanknotesIcon,
+  // BanknotesIcon,
   CalendarDaysIcon,
   UserCircleIcon,
   PowerIcon
@@ -67,12 +67,12 @@ const navigation = [
     href: "/orders",
     count: 12,
   },
-  {
-    name: "Payments",
-    icon: BanknotesIcon,
-    href: "/payments",
-    count: 12,
-  },
+  // {
+  //   name: "Payments",
+  //   icon: BanknotesIcon,
+  //   href: "/payments",
+  //   count: 12,
+  // },
   {
     name: "Category",
     icon: GiftIcon,

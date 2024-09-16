@@ -35,7 +35,7 @@ export default function CreateMedicalHistory({
 
   const { data: dentistData, isFetching: isFetchingDentist } = useQuery(
     ["dentists"],
-    () => get("/dentists", { params: { populate: ['users'] } })
+    () => get("/dentists", { params: { populate: ['user'] } })
   );
 
 
@@ -89,7 +89,7 @@ export default function CreateMedicalHistory({
                   options={dentistData?.data?.map((item: any) => {
                     return {
                       value: item._id,
-                      label: item?.users?.name,
+                      label: item?.user?.fullName,
                     };
                   })}
                 />

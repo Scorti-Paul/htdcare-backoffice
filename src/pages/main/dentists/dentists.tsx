@@ -62,7 +62,7 @@ const Dentists: FC<{}> = () => {
           onClick: (e, dataFromTable) => {
             e?.preventDefault();
             setSelected(dataFromTable);
-            navigate("update-produce", { state: dataFromTable });
+            navigate("update-dentist", { state: dataFromTable });
           },
         },
         {

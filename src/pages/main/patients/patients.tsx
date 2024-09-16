@@ -58,7 +58,7 @@ const Patients: FC<{}> = () => {
           onClick: (e, dataFromTable) => {
             e?.preventDefault();
             setSelected(dataFromTable);
-            navigate("update-product", { state: dataFromTable });
+            navigate("update-patient", { state: dataFromTable });
           },
         },
         {
